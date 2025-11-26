@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شغل الموظف - صالون لمسة إبداعية</title>
+<style>
+body { font-family:'Cairo',sans-serif; background:#111; color:#fff; margin:0; }
+header { display:flex; align-items:center; justify-content:space-between; padding:15px; background:#222; position:relative; flex-wrap:wrap; }
+header h1 { color:gold; font-size:1.2rem; position:absolute; left:15px; top:50%; transform:translateY(-50%); }
+header .logo-container { margin:0 auto; }
+header .logo-container img { width:80px; height:80px; border-radius:50%; border:3px solid gold; box-shadow:0 0 10px gold; }
+header button { padding:6px 10px; border:none; border-radius:5px; cursor:pointer; background:gold; color:#111; font-weight:bold; }
+
+@media(max-width:480px){
+    header { flex-direction:column; justify-content:center; text-align:center; }
+    header h1 { position:static; transform:none; margin-bottom:5px; }
+    header .logo-container { margin:0 auto 5px; }
+    header button { margin-bottom:5px; }
+}
+
+.container { max-width:900px; margin:20px auto; padding:15px; }
+.cards { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:20px; }
+.card { flex:1 1 28%; min-width:100px; padding:15px; border-radius:12px; text-align:center; font-weight:bold; color:#fff; box-shadow:0 0 15px rgba(0,0,0,0.3); }
+.card-network { background:linear-gradient(135deg,#1e3c72,#2a5298);}
+.card-cash { background:linear-gradient(135deg,#56ab2f,#a8e063);}
+.card-total { background:linear-gradient(135deg,#f7971e,#ffd200);}
+
+.sale-entry { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:15px; align-items:center; }
+.sale-entry input[type="number"], .sale-entry input[type="date"], .sale-entry button { padding:10px; border-radius:6px; border:none; font-size:1rem; text-align:center; flex:1 1 auto; }
+.sale-entry button.network { background:#2a5298; color:#fff; }
+.sale-entry button.cash { background:#a8e063; color:#111; }
+.sale-entry button.show { background:#ffd200; color:#111; }
+
+table { width:95%; border-collapse:collapse; background:#222; border-radius:10px; display:table; margin:0 auto; }
+thead th { padding:10px; color:gold; text-align:center; }
+tbody td { padding:8px; text-align:center; border-bottom:1px solid #333; }
+tbody tr:hover { background: rgba(255,215,0,0.15); }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>شغل الموظف</h1>
+    <div class="logo-container">
+        <img src="logo.jpg" alt="Logo">
+    </div>
+    <button onclick="logout()">تسجيل الخروج</button>
+</header>
+
+<div class="container">
+
+<div class="cards">
+    <div class="card card-network">
+        <h3>شبكة</h3>
+        <p id="totalCard">0 ريال</p>
+    </div>
+    <div class="card card-cash">
+        <h3>كاش</h3>
+        <p id="totalCash">0 ريال</p>
+    </div>
+    <div class="card card-total">
+        <h3>الإجمالي</h3>
+        <p id="grandTotal">0 ريال</p>
+    </div>
+</div>
+
+<div class="sale-entry">
+    <input type="number" id="saleAmount" placeholder="المبلغ">
+    <button class="network" onclick="addSale('network')">شبكة</button>
+    <button class="cash" onclick="addSale('cash')">كاش</button>
+    <input type="date" id="fromDate" style="max-width:130px;">
+    <input type="date" id="toDate" style="max-width:130px;">
+    <button class="show" onclick="filterSales()">عرض</button>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>نوع الدفع</th>
+            <th>المبلغ</th>
+            <th>التاريخ</th>
+            <th>الوقت</th>
+        </tr>
+    </thead>
+    <tbody id="salesTable"></tbody>
+</table>
+
+</div>
+
+<script>
+const currentEmp = localStorage.getItem("currentEmployee");
+if(!currentEmp){
+    alert("⚠ يجب تسجيل الدخول أولاً!");
+    window.location.assign("employee-login.html");
+}
+
+let sales = JSON.parse(localStorage.getItem('allSales') || "[]").filter(s => s.employee === currentEmp);
+
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('fromDate').value = today;
+document.getElementById('toDate').value = today;
+
+function addSale(type){
+    const amount = parseFloat(document.getElementById('saleAmount').value);
+    if(!amount || amount<=0){ alert("أدخل مبلغ صحيح"); return; }
+
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit' });
+    const date = now.toISOString().split('T')[0];
+
+    const sale = { employee: currentEmp, type, amount, date, time };
+
+    let allSales = JSON.parse(localStorage.getItem('allSales') || "[]");
+    allSales.push(sale);
+    localStorage.setItem('allSales', JSON.stringify(allSales));
+
+    sales.push(sale);
+    document.getElementById('saleAmount').value="";
+    filterSales();
+}
+
+function updateCards(filteredSales){
+    let totalNet = 0, totalCash = 0;
+    filteredSales.forEach(s=>{
+        if(s.type==='network') totalNet += s.amount;
+        else totalCash += s.amount;
+    });
+    document.getElementById('totalCard').textContent = totalNet + " ريال";
+    document.getElementById('totalCash').textContent = totalCash + " ريال";
+    document.getElementById('grandTotal').textContent = (totalNet+totalCash) + " ريال";
+}
+
+function displayTable(filteredSales){
+    const tbody = document.getElementById('salesTable');
+    tbody.innerHTML="";
+    filteredSales.forEach((s,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${i+1}</td>
+            <td>${s.type==='network'?'شبكة':'كاش'}</td>
+            <td>${s.amount}</td>
+            <td>${s.date}</td>
+            <td>${s.time}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function filterSales(){
+    const from = document.getElementById('fromDate').value;
+    const to = document.getElementById('toDate').value;
+    const filtered = sales.filter(s => s.date>=from && s.date<=to);
+    updateCards(filtered);
+    displayTable(filtered);
+}
+
+function logout(){
+    localStorage.removeItem("currentEmployee");
+    window.location.assign("index.html");
+}
+
+// تحديث تلقائي كل ثانيتين
+setInterval(()=>{
+    let allSales = JSON.parse(localStorage.getItem('allSales') || "[]");
+    const empSales = allSales.filter(s => s.employee === currentEmp);
+    if(JSON.stringify(empSales)!==JSON.stringify(sales)){
+        sales = empSales;
+        filterSales();
+    }
+},2000);
+
+filterSales();
+</script>
+
+</body>
+</html>

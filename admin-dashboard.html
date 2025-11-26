@@ -3,123 +3,220 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة تحكم المدير - صالون لمسة إبداعية</title>
+<title>Admin Dashboard - صالون لمسة إبداعية</title>
 <style>
-body { font-family:'Cairo',sans-serif; background:#111; color:#fff; margin:0; }
-header { display:flex; align-items:center; justify-content:space-between; padding:15px; background:#222; }
-header h1 { color:gold; }
-header button { padding:6px 10px; border:none; border-radius:5px; cursor:pointer; background:gold; color:#111; font-weight:bold; }
-.container { max-width:900px; margin:20px auto; padding:15px; }
-h2 { text-align:center; color:gold; margin-bottom:15px; }
+body { font-family:'Cairo',sans-serif; background:#111; color:#fff; margin:0; padding:0; }
+header { display:flex; flex-direction:column; align-items:center; padding:15px; background:#1a1a1a; border-bottom:1px solid #333; position:relative; }
+header .logo-container { border:4px solid gold; border-radius:50%; padding:5px; box-shadow:0 0 15px gold; margin-bottom:10px; }
+header .logo-container img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
+header h1 { font-size:1.3rem; color:gold; margin:0; }
+header button { position:absolute; top:15px; padding:8px 12px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+#logoutBtn { right:150px; background:red; color:#fff; }
+#addUserBtn { left:150px; background:green; color:#fff; }
 
-form { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:20px; }
-form input { padding:10px; border-radius:6px; border:none; flex:1 1 200px; font-size:1rem; }
-form button { padding:10px 20px; border:none; border-radius:6px; background:gold; color:#111; cursor:pointer; font-weight:bold; transition:0.2s; }
-form button:hover { transform:translateY(-2px); box-shadow:0 0 10px gold; }
+.container { max-width:1000px; margin:20px auto; padding:15px; }
+.cards { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; margin-bottom:20px; }
+.card { flex:1 1 250px; background:#1a1a1a; border-radius:15px; padding:20px; text-align:center; color:#fff; font-weight:bold; box-shadow:0 0 25px rgba(255,215,0,0.3); }
+.card h3 { font-size:1.4rem; margin-bottom:15px; text-shadow:0 0 10px gold; }
+.card .stat { display:flex; justify-content:center; align-items:center; padding:8px 12px; margin:6px 0; border-radius:8px; font-weight:bold; }
+.card .network { background:linear-gradient(135deg,#1e3c72,#2a5298); color:#fff; }
+.card .cash { background:linear-gradient(135deg,#56ab2f,#a8e063); color:#111; }
+.card .total { background:linear-gradient(135deg,#f7971e,#ffd200); color:#111; }
+.card.total-all { background:linear-gradient(135deg,#ffd700,#ffa500); color:#111; font-size:1.2rem; }
 
-table { width:100%; border-collapse:collapse; background:#222; border-radius:10px; overflow:hidden; display:block; }
-thead th { padding:10px; color:gold; text-align:center; }
+.filter { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:15px; align-items:center; }
+.filter input[type="date"], .filter button { padding:10px; border-radius:6px; border:none; font-size:1rem; cursor:pointer; }
+
+table { width:95%; border-collapse:collapse; background:#1a1a1a; border-radius:12px; display:table; margin:0 auto; }
+thead th { padding:10px; color:gold; text-align:center; border-bottom:1px solid #333; }
 tbody td { padding:8px; text-align:center; border-bottom:1px solid #333; }
 tbody tr:hover { background: rgba(255,215,0,0.15); }
+
+.delete-btn { background:red; color:#fff; border:none; border-radius:6px; padding:5px 8px; cursor:pointer; }
+
+/* نافذة إضافة موظف */
+#addUserModal {
+    display:none;
+    position:fixed; top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center; align-items:center;
+}
+#addUserModal .modal-content {
+    background:#1a1a1a;
+    padding:20px;
+    border-radius:12px;
+    width:300px;
+    text-align:center;
+}
+#addUserModal input {
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:6px;
+    border:none;
+}
+#addUserModal button { padding:10px 15px; margin:5px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+#saveUserBtn { background:gold; color:#111; }
+#closeUserModal { background:red; color:#fff; }
 
 </style>
 </head>
 <body>
 
 <header>
-    <h1>لوحة تحكم المدير</h1>
-    <button onclick="logout()">تسجيل الخروج</button>
+    <div class="logo-container"><img src="logo.jpg" alt="Logo"></div>
+    <h1>Admin Dashboard - مبيعات الموظفين</h1>
+    <button id="addUserBtn">إضافة موظف</button>
+    <button id="logoutBtn">تسجيل الخروج</button>
 </header>
 
 <div class="container">
+<div class="filter">
+    <input type="date" id="fromDate">
+    <input type="date" id="toDate">
+    <button onclick="filterSales()">عرض</button>
+</div>
 
-<h2>إضافة موظف جديد</h2>
-<form id="addEmployeeForm">
-    <input type="text" id="empName" placeholder="الاسم الكامل" required>
-    <input type="text" id="empUsername" placeholder="اسم المستخدم" required>
-    <input type="password" id="empPassword" placeholder="كلمة المرور" required>
-    <button type="submit">إضافة الموظف</button>
-</form>
+<div class="cards" id="totalCardContainer"></div>
+<div class="cards" id="cardsContainer"></div>
 
-<h2>قائمة الموظفين</h2>
 <table>
     <thead>
         <tr>
-            <th>#</th>
-            <th>الاسم</th>
-            <th>اسم المستخدم</th>
-            <th>الإجراء</th>
+            <th>الموظف</th>
+            <th>نوع الدفع</th>
+            <th>المبلغ</th>
+            <th>التاريخ</th>
+            <th>الوقت</th>
+            <th>حذف</th>
         </tr>
     </thead>
-    <tbody id="employeeTable">
-    </tbody>
+    <tbody id="salesTable"></tbody>
 </table>
-
 </div>
 
-<script src="localStorage_data.js"></script>
+<!-- نافذة إضافة موظف -->
+<div id="addUserModal">
+    <div class="modal-content">
+        <h3 style="color:gold; margin-bottom:15px;">إضافة موظف جديد</h3>
+        <input type="text" id="newUserName" placeholder="اسم الموظف">
+        <input type="text" id="newUserUsername" placeholder="اسم المستخدم">
+        <input type="password" id="newUserPass" placeholder="كلمة المرور">
+        <button id="saveUserBtn">حفظ</button>
+        <button id="closeUserModal">إلغاء</button>
+    </div>
+</div>
+
 <script>
-if(localStorage.getItem("isAdminLoggedIn")!=="true"){
-    alert("⚠ يجب تسجيل الدخول كمدير أولاً!");
-    window.location.assign("admin-login.html");
-}
+let sales = JSON.parse(localStorage.getItem('allSales') || "[]");
 
-// تحميل الموظفين من LocalStorage
-let employees = getEmployees();
+// تواريخ افتراضية
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('fromDate').value = today;
+document.getElementById('toDate').value = today;
 
-// عرض الموظفين في الجدول
-function displayEmployees(){
-    const tbody = document.getElementById("employeeTable");
+function filterSales(){
+    const from = document.getElementById('fromDate').value;
+    const to = document.getElementById('toDate').value;
+    const filtered = sales.filter(s=> s.date>=from && s.date<=to);
+
+    // بطاقات إجمالي
+    let totalNet=0,totalCash=0;
+    filtered.forEach(s=>{
+        if(s.type==='network') totalNet+=s.amount;
+        else totalCash+=s.amount;
+    });
+    const grandTotal = totalNet+totalCash;
+    document.getElementById('totalCardContainer').innerHTML = `
+        <div class="card total-all">
+            <h3>إجمالي جميع الموظفين</h3>
+            <div class="stat network">شبكة: ${totalNet} ريال</div>
+            <div class="stat cash">كاش: ${totalCash} ريال</div>
+            <div class="stat total">الإجمالي: ${grandTotal} ريال</div>
+        </div>
+    `;
+
+    // بطاقات الموظفين
+    const cardsContainer = document.getElementById('cardsContainer');
+    cardsContainer.innerHTML = "";
+    let employeeNames = [...new Set(filtered.map(s=>s.employee))];
+    employeeNames.forEach(name=>{
+        const empSales = filtered.filter(s=>s.employee===name);
+        let net=0, cash=0;
+        empSales.forEach(s=>{
+            if(s.type==='network') net+=s.amount;
+            else cash+=s.amount;
+        });
+        const total = net+cash;
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.innerHTML = `
+            <h3>${name}</h3>
+            <div class="stat network">شبكة: ${net} ريال</div>
+            <div class="stat cash">كاش: ${cash} ريال</div>
+            <div class="stat total">الإجمالي: ${total} ريال</div>
+        `;
+        cardsContainer.appendChild(card);
+    });
+
+    // تحديث الجدول
+    const tbody = document.getElementById('salesTable');
     tbody.innerHTML="";
-    employees.forEach((emp,i)=>{
-        const tr = document.createElement("tr");
+    filtered.forEach((s,i)=>{
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${i+1}</td>
-            <td>${emp.name}</td>
-            <td>${emp.username}</td>
-            <td>
-                <button onclick="deleteEmployee(${i})">حذف</button>
-            </td>
+            <td>${s.employee}</td>
+            <td>${s.type==='network'?'شبكة':'كاش'}</td>
+            <td>${s.amount}</td>
+            <td>${s.date}</td>
+            <td>${s.time}</td>
+            <td><button class="delete-btn" onclick="deleteSale(${i})">حذف</button></td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-displayEmployees();
+function deleteSale(index){
+    sales.splice(index,1);
+    localStorage.setItem('allSales', JSON.stringify(sales));
+    filterSales();
+}
 
-// إضافة موظف جديد
-document.getElementById("addEmployeeForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const name = document.getElementById("empName").value.trim();
-    const username = document.getElementById("empUsername").value.trim();
-    const password = document.getElementById("empPassword").value.trim();
-
-    if(employees.find(emp=>emp.username===username)){
-        alert("اسم المستخدم موجود مسبقاً");
-        return;
-    }
-
-    const newEmp = { name, username, password };
-    employees.push(newEmp);
-    saveEmployees(employees);
-    displayEmployees();
-    this.reset();
+document.getElementById("logoutBtn").addEventListener("click", ()=>{
+    localStorage.removeItem("isAdminLoggedIn");
+    window.location.href = "index.html";
 });
 
-// حذف موظف
-function deleteEmployee(index){
-    if(confirm("هل أنت متأكد من حذف هذا الموظف؟")){
-        employees.splice(index,1);
-        saveEmployees(employees);
-        displayEmployees();
-    }
-}
+// نافذة إضافة مستخدم
+const addModal = document.getElementById("addUserModal");
+document.getElementById("addUserBtn").addEventListener("click", ()=> addModal.style.display="flex");
+document.getElementById("closeUserModal").addEventListener("click", ()=> addModal.style.display="none");
+document.getElementById("saveUserBtn").addEventListener("click", ()=>{
+    const name = document.getElementById("newUserName").value.trim();
+    const username = document.getElementById("newUserUsername").value.trim();
+    const pass = document.getElementById("newUserPass").value.trim();
+    if(!name || !username || !pass){ alert("يرجى إدخال جميع البيانات"); return; }
 
-// تسجيل الخروج
-function logout(){
-    localStorage.removeItem("isAdminLoggedIn");
-    window.location.assign("admin-login.html");
-}
+    let workers = JSON.parse(localStorage.getItem("workers") || "[]");
+    workers.push({name:name, username:username, password:pass, sales:[]});
+    localStorage.setItem("workers", JSON.stringify(workers));
+    alert("تمت إضافة الموظف بنجاح!");
+    addModal.style.display="none";
+    document.getElementById("newUserName").value="";
+    document.getElementById("newUserUsername").value="";
+    document.getElementById("newUserPass").value="";
+});
+
+setInterval(()=>{
+    let allSales = JSON.parse(localStorage.getItem('allSales') || "[]");
+    if(JSON.stringify(allSales)!==JSON.stringify(sales)){
+        sales = allSales;
+        filterSales();
+    }
+},2000);
+
+filterSales();
 </script>
 
 </body>
