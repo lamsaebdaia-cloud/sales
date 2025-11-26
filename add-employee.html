@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إضافة موظف جديد - صالون لمسة إبداعية</title>
+<style>
+body { font-family:'Cairo',sans-serif; background:#111; color:#fff; margin:0; display:flex; justify-content:center; align-items:center; height:100vh; }
+.form-box { background:#1a1a1a; padding:30px 25px; border-radius:15px; box-shadow:0 0 25px rgba(255,215,0,0.3); width:350px; max-width:90%; }
+.form-box h2 { color:gold; margin-bottom:20px; text-align:center; }
+.input-group { position:relative; margin:12px 0; }
+.input-group input { width:100%; padding:12px; border:none; border-radius:8px; background:#222; color:#fff; font-size:1rem; box-sizing:border-box; }
+.input-group span { position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#ffd700; font-size:1.2rem; }
+button { width:100%; padding:12px; margin-top:15px; background:gold; color:#111; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s; font-size:1rem; }
+button:hover { transform:translateY(-2px); box-shadow:0 0 15px gold; }
+</style>
+</head>
+<body>
+
+<div class="form-box">
+    <h2>إضافة موظف جديد</h2>
+
+    <div class="input-group">
+        <input type="text" id="empName" placeholder="اسم الموظف">
+        <span>👤</span>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="username" placeholder="اسم المستخدم">
+        <span>🆔</span>
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="password" placeholder="كلمة المرور">
+        <span>🔒</span>
+    </div>
+
+    <button onclick="addEmployee()">إضافة</button>
+</div>
+
+<script src="localStorage_data.js"></script>
+<script>
+const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
+if(!isAdminLoggedIn){
+    alert("⚠ يجب تسجيل الدخول كمدير!");
+    window.location.assign("admin-login.html");
+}
+
+function addEmployee(){
+    const name = document.getElementById('empName').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if(!name || !username || !password){
+        alert("يرجى ملء كل الحقول!");
+        return;
+    }
+
+    let employees = JSON.parse(localStorage.getItem("employees") || "[]");
+
+    // التحقق من وجود اسم المستخدم مسبقاً
+    if(employees.some(e => e.username === username)){
+        alert("اسم المستخدم موجود بالفعل!");
+        return;
+    }
+
+    employees.push({ name, username, password });
+    localStorage.setItem("employees", JSON.stringify(employees));
+    alert("تم إضافة الموظف بنجاح!");
+    document.getElementById('empName').value="";
+    document.getElementById('username').value="";
+    document.getElementById('password').value="";
+}
+</script>
+
+</body>
+</html>

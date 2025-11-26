@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم المدير - صالون لمسة إبداعية</title>
+<style>
+body { font-family:'Cairo',sans-serif; background:#111; color:#fff; margin:0; }
+header { display:flex; align-items:center; justify-content:space-between; padding:15px; background:#222; }
+header h1 { color:gold; }
+header button { padding:6px 10px; border:none; border-radius:5px; cursor:pointer; background:gold; color:#111; font-weight:bold; }
+.container { max-width:900px; margin:20px auto; padding:15px; }
+h2 { text-align:center; color:gold; margin-bottom:15px; }
+
+form { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:20px; }
+form input { padding:10px; border-radius:6px; border:none; flex:1 1 200px; font-size:1rem; }
+form button { padding:10px 20px; border:none; border-radius:6px; background:gold; color:#111; cursor:pointer; font-weight:bold; transition:0.2s; }
+form button:hover { transform:translateY(-2px); box-shadow:0 0 10px gold; }
+
+table { width:100%; border-collapse:collapse; background:#222; border-radius:10px; overflow:hidden; display:block; }
+thead th { padding:10px; color:gold; text-align:center; }
+tbody td { padding:8px; text-align:center; border-bottom:1px solid #333; }
+tbody tr:hover { background: rgba(255,215,0,0.15); }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>لوحة تحكم المدير</h1>
+    <button onclick="logout()">تسجيل الخروج</button>
+</header>
+
+<div class="container">
+
+<h2>إضافة موظف جديد</h2>
+<form id="addEmployeeForm">
+    <input type="text" id="empName" placeholder="الاسم الكامل" required>
+    <input type="text" id="empUsername" placeholder="اسم المستخدم" required>
+    <input type="password" id="empPassword" placeholder="كلمة المرور" required>
+    <button type="submit">إضافة الموظف</button>
+</form>
+
+<h2>قائمة الموظفين</h2>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>اسم المستخدم</th>
+            <th>الإجراء</th>
+        </tr>
+    </thead>
+    <tbody id="employeeTable">
+    </tbody>
+</table>
+
+</div>
+
+<script src="localStorage_data.js"></script>
+<script>
+if(localStorage.getItem("isAdminLoggedIn")!=="true"){
+    alert("⚠ يجب تسجيل الدخول كمدير أولاً!");
+    window.location.assign("admin-login.html");
+}
+
+// تحميل الموظفين من LocalStorage
+let employees = getEmployees();
+
+// عرض الموظفين في الجدول
+function displayEmployees(){
+    const tbody = document.getElementById("employeeTable");
+    tbody.innerHTML="";
+    employees.forEach((emp,i)=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${i+1}</td>
+            <td>${emp.name}</td>
+            <td>${emp.username}</td>
+            <td>
+                <button onclick="deleteEmployee(${i})">حذف</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+displayEmployees();
+
+// إضافة موظف جديد
+document.getElementById("addEmployeeForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const name = document.getElementById("empName").value.trim();
+    const username = document.getElementById("empUsername").value.trim();
+    const password = document.getElementById("empPassword").value.trim();
+
+    if(employees.find(emp=>emp.username===username)){
+        alert("اسم المستخدم موجود مسبقاً");
+        return;
+    }
+
+    const newEmp = { name, username, password };
+    employees.push(newEmp);
+    saveEmployees(employees);
+    displayEmployees();
+    this.reset();
+});
+
+// حذف موظف
+function deleteEmployee(index){
+    if(confirm("هل أنت متأكد من حذف هذا الموظف؟")){
+        employees.splice(index,1);
+        saveEmployees(employees);
+        displayEmployees();
+    }
+}
+
+// تسجيل الخروج
+function logout(){
+    localStorage.removeItem("isAdminLoggedIn");
+    window.location.assign("admin-login.html");
+}
+</script>
+
+</body>
+</html>

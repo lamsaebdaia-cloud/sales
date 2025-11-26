@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفحة الموظف - تسجيل المبيعات</title>
+<style>
+body { 
+    font-family:'Cairo',sans-serif; 
+    background:#111; 
+    color:#fff; 
+    margin:0; 
+    padding:0; 
+}
+
+/* ====== الهيدر مع اللوجو ===== */
+header {
+    width:100%;
+    background:#1a1a1a;
+    padding:15px 0;
+    text-align:center;
+    border-bottom:1px solid #333;
+}
+
+.logo-container {
+    display:inline-block;
+    border:4px solid gold;
+    border-radius:50%;
+    padding:5px;
+    box-shadow:0 0 15px gold;
+}
+
+.logo-container img {
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+/* ====== صندوق تسجيل الدخول والمبيعات ===== */
+.container {
+    background:#1a1a1a; 
+    padding:30px; 
+    border-radius:15px; 
+    width:350px; 
+    max-width:90%; 
+    text-align:center; 
+    margin:40px auto;
+}
+input, button { 
+    width:100%; 
+    padding:12px; 
+    margin:10px 0; 
+    border:none; 
+    border-radius:8px; 
+    font-size:1rem; 
+}
+input { background:#222; color:#fff; }
+button { background:gold; color:#111; cursor:pointer; font-weight:bold; }
+#salesSection { display:none; margin-top:20px; }
+#successMsg { color:lightgreen; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<!-- ===== الهيدر + اللوجو ===== -->
+<header>
+    <div class="logo-container">
+        <img src="logo.jpg" alt="Logo">
+    </div>
+</header>
+
+<div class="container">
+    <h2>تسجيل دخول العامل</h2>
+    <div id="loginSection">
+        <input type="text" id="workerName" placeholder="اسم العامل">
+        <input type="password" id="workerPass" placeholder="كلمة المرور">
+        <button onclick="loginWorker()">دخول</button>
+    </div>
+
+    <div id="salesSection">
+        <h3>أدخل المبيعات</h3>
+        <input type="number" id="saleAmount" placeholder="المبلغ">
+        <button onclick="addSale()">حفظ المبيعات</button>
+        <p id="successMsg"></p>
+        <button style="margin-top:15px;" onclick="logoutWorker()">تسجيل الخروج</button>
+    </div>
+</div>
+
+<script>
+// جلب بيانات العمال من LocalStorage
+let workers = JSON.parse(localStorage.getItem("workers") || "[]");
+let currentWorker = null;
+
+function loginWorker(){
+    const name = document.getElementById("workerName").value.trim();
+    const pass = document.getElementById("workerPass").value.trim();
+
+    if(!name || !pass){ alert("أدخل الاسم وكلمة المرور"); return; }
+
+    // البحث عن العامل
+    let worker = workers.find(w=>w.name===name);
+    if(!worker){
+        // إذا غير موجود، إنشاء حساب جديد
+        worker = { name:name, password:pass, sales:[] };
+        workers.push(worker);
+        localStorage.setItem("workers", JSON.stringify(workers));
+        alert("تم إنشاء الحساب وتسجيل الدخول بنجاح!");
+    } else {
+        if(worker.password !== pass){
+            alert("كلمة المرور غير صحيحة!");
+            return;
+        }
+        alert("تم تسجيل الدخول بنجاح!");
+    }
+
+    currentWorker = worker;
+    localStorage.setItem("currentWorker", name);
+
+    // إخفاء تسجيل الدخول وإظهار قسم المبيعات
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("salesSection").style.display = "block";
+}
+
+function addSale(){
+    const amount = parseFloat(document.getElementById("saleAmount").value);
+    if(!amount || amount <= 0){ alert("أدخل مبلغ صالح"); return; }
+
+    const now = new Date();
+    const date = now.toISOString().split('T')[0];
+    const time = now.toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit' });
+
+    currentWorker.sales.push({amount, date, time});
+    localStorage.setItem("workers", JSON.stringify(workers));
+
+    document.getElementById("saleAmount").value = "";
+    const msg = document.getElementById("successMsg");
+    msg.textContent = `تم تسجيل المبلغ ${amount} ريال بنجاح (${date} ${time})`;
+}
+
+// تسجيل خروج العامل
+function logoutWorker(){
+    localStorage.removeItem("currentWorker");
+    document.getElementById("salesSection").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+    document.getElementById("workerName").value = "";
+    document.getElementById("workerPass").value = "";
+    document.getElementById("successMsg").textContent = "";
+}
+
+// التحقق من تسجيل الدخول سابقاً
+const prevWorker = localStorage.getItem("currentWorker");
+if(prevWorker){
+    currentWorker = workers.find(w=>w.name===prevWorker);
+    if(currentWorker){
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("salesSection").style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
