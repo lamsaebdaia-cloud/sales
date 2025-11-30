@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جدول المبيعات - صالون لمسة إبداعية</title>
+<style>
+body { font-family:'Cairo',sans-serif; background: linear-gradient(180deg,#000,#111); color:#fff; margin:0; padding:20px; display:flex; flex-direction:column; align-items:center; }
+header { text-align:center; margin-bottom:20px; }
+header .logo-container { display:inline-block; border:4px solid gold; border-radius:50%; padding:5px; box-shadow:0 0 20px gold; margin-bottom:10px; }
+header .logo-container img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
+header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
+
+.filter-row { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; justify-content:center; }
+.filter-row input { padding:8px; border-radius:6px; border:none; background:#222; color:#fff; }
+.filter-row button { padding:8px 12px; border-radius:6px; border:none; background:gold; color:#111; font-weight:bold; cursor:pointer; transition:0.3s; }
+.filter-row button:hover { transform:translateY(-2px); box-shadow:0 0 20px gold; }
+
+table { width:100%; border-collapse:collapse; max-width:1000px; margin-bottom:20px; }
+th, td { padding:10px; border:1px solid #333; text-align:center; }
+th { background:gold; color:#111; }
+td { background:#222; }
+.delete-btn { padding:5px 8px; background:red; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+.delete-btn:hover { background:#ff4d4d; }
+
+.back-btn { padding:10px 15px; background:gold; color:#111; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s; }
+.back-btn:hover { transform:translateY(-2px); box-shadow:0 0 20px gold; }
+@media(max-width:480px){ table, th, td { font-size:0.8rem; } .filter-row input, .filter-row button { font-size:0.8rem; padding:6px; } }
+</style>
+</head>
+<body>
+<header>
+    <div class="logo-container"><img src="logo.jpg" alt="Logo"></div>
+    <h1>جدول المبيعات لكل الموظفين</h1>
+</header>
+
+<div class="filter-row">
+    <label for="startDate">من:</label>
+    <input type="date" id="startDate">
+    <label for="endDate">إلى:</label>
+    <input type="date" id="endDate">
+    <button onclick="applyFilter()">تطبيق الفلتر</button>
+</div>
+
+<table id="salesTable">
+    <thead>
+        <tr>
+            <th>الموظف</th>
+            <th>طريقة الدفع</th>
+            <th>المبلغ</th>
+            <th>التاريخ</th>
+            <th>الوقت</th>
+            <th>حذف</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<button class="back-btn" onclick="window.location.href='dashboard.html'">رجوع للوحة التحكم</button>
+
+<script>
+// جلب بيانات الموظفين
+const workers = JSON.parse(localStorage.getItem('workers') || '[]');
+
+// جلب المبيعات وعرضها
+function loadSales(data=null){
+    const sales = data || JSON.parse(localStorage.getItem('salesData')||'[]');
+    const tbody = document.querySelector('#salesTable tbody');
+    tbody.innerHTML='';
+
+    sales.forEach((s,index)=>{
+        // البحث عن اسم الموظف الحقيقي من workers
+        const employeeObj = workers.find(w => w.username === s.employeeUsername);
+        const employeeName = employeeObj ? employeeObj.name : s.employee; // fallback للبيانات القديمة
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${employeeName}</td>
+            <td>${s.method}</td>
+            <td>${s.amount}</td>
+            <td>${s.date}</td>
+            <td>${s.time}</td>
+            <td><button class="delete-btn" onclick="deleteSale(${index})">حذف</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// حذف عملية
+function deleteSale(index){
+    if(confirm('هل أنت متأكد من حذف هذه العملية؟')){
+        let sales = JSON.parse(localStorage.getItem('salesData')||'[]');
+        sales.splice(index,1);
+        localStorage.setItem('salesData', JSON.stringify(sales));
+        loadSales();
+    }
+}
+
+// تطبيق الفلتر
+function applyFilter(){
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+    if(!start || !end){ alert('حدد الفترة'); return; }
+    const sales = JSON.parse(localStorage.getItem('salesData')||'[]');
+    const filtered = sales.filter(s=>s.date>=start && s.date<=end);
+    loadSales(filtered);
+}
+
+window.onload = ()=>loadSales();
+</script>
+</body>
+</html>

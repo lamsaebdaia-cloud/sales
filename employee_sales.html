@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل المبيعات - صالون لمسة إبداعية</title>
+<style>
+body { font-family:'Cairo',sans-serif; background: linear-gradient(180deg,#000,#111); color:#fff; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; margin:0; padding:40px 0; }
+header { text-align:center; margin-bottom:20px; }
+header .logo-container { display:inline-block; border:4px solid gold; border-radius:50%; padding:5px; box-shadow:0 0 20px gold; margin-bottom:10px; }
+header .logo-container img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
+header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
+
+.button-top { display:flex; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.button-top button { padding:10px 20px; border:none; border-radius:8px; font-weight:bold; font-size:1rem; cursor:pointer; }
+.view-btn { background-color:#44bd32; color:white; }
+.logout-btn { background-color:red; color:white; }
+
+.sales-box { background:#111; padding:30px 25px; border-radius:15px; box-shadow:0 0 35px rgba(255,215,0,0.5); width:400px; max-width:90%; text-align:center; display:flex; flex-direction:column; align-items:center; }
+.sales-box:hover { box-shadow:0 0 50px rgba(255,215,0,0.8); }
+
+h2 { color:gold; margin-bottom:20px; text-shadow:0 0 10px gold; font-size:1.5rem; }
+.input-row { display:flex; gap:10px; width:100%; margin:15px 0; }
+.input-row input { flex:2; padding:12px; border:none; border-radius:8px; background:#222; color:#fff; font-size:1rem; text-align:right; }
+.input-row button { flex:1; padding:12px; border:none; border-radius:8px; background:gold; color:#111; font-weight:bold; cursor:pointer; transition:0.3s; font-size:1rem; }
+.input-row button:hover { transform:translateY(-2px); box-shadow:0 0 20px gold; }
+
+button.full-width { width:100%; margin-top:15px; }
+
+@media(max-width:480px){ 
+    .sales-box { padding:20px 15px; } 
+    h2 { font-size:1.3rem; } 
+    .input-row input, .input-row button { font-size:0.95rem; padding:10px; } 
+    button.full-width { font-size:0.95rem; padding:10px; } 
+}
+</style>
+</head>
+<body>
+<div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+
+<header>
+    <div class="logo-container"><img src="logo.jpg" alt="Logo"></div>
+    <h1>تسجيل المبيعات</h1>
+</header>
+
+<!-- أزرار عرض المبيعات والخروج -->
+<div class="button-top">
+    <button class="view-btn" onclick="goToSalesList()">عرض المبيعات</button>
+    <button class="logout-btn" onclick="logout()">خروج</button>
+</div>
+
+<div class="sales-box">
+    <h2 id="employeeName">مرحبًا، [اسم الموظف]</h2>
+    <div class="input-row">
+        <input type="number" id="amount" placeholder="المبلغ">
+        <button onclick="pay('cash')">كاش</button>
+        <button onclick="pay('card')">شبكة</button>
+    </div>
+</div>
+</div>
+
+<script>
+// دالة للحصول على اسم الموظف من URL أو localStorage
+function getEmployeeName(){
+    const params = new URLSearchParams(window.location.search);
+    const userParam = params.get('user');
+    if(userParam && userParam.trim() !== '') return userParam.trim();
+    return localStorage.getItem('loggedEmployee') || 'الموظف';
+}
+
+// تعيين الاسم
+let employeeName = getEmployeeName();
+document.getElementById('employeeName').textContent = `مرحبًا، ${employeeName}`;
+
+// حفظ الاسم في localStorage
+localStorage.setItem('loggedEmployee', employeeName);
+
+// تحديث الرابط الحالي ليشمل ?user=اسم_الموظف إذا لم يكن موجود
+if(!window.location.search.includes('user=')){
+    const newUrl = window.location.pathname + '?user=' + encodeURIComponent(employeeName);
+    window.history.replaceState({}, '', newUrl);
+}
+
+// تسجيل المبيعات
+function pay(method){
+    const amt = parseFloat(document.getElementById('amount').value);
+    if(!amt){ alert('يرجى إدخال المبلغ'); return; }
+    const now = new Date();
+    const sale = {
+        employee: employeeName,
+        amount: amt,
+        method: method,
+        date: now.toISOString().split('T')[0],
+        time: now.toTimeString().split(' ')[0]
+    };
+    let salesData = JSON.parse(localStorage.getItem('salesData') || '[]');
+    salesData.push(sale);
+    localStorage.setItem('salesData', JSON.stringify(salesData));
+    alert(`تم تسجيل عملية ${method.toUpperCase()} بقيمة ${amt}`);
+    document.getElementById('amount').value = '';
+}
+
+// الانتقال لصفحة عرض المبيعات مع تمرير اسم الموظف
+function goToSalesList(){
+    window.location.href = 'employee_sales_list.html?user=' + encodeURIComponent(employeeName);
+}
+
+// تسجيل الخروج
+function logout(){
+    localStorage.removeItem('loggedEmployee');
+    window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>

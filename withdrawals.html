@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>السحوبات - صالون لمسة إبداعية</title>
+<style>
+body { font-family: 'Cairo', sans-serif; background: #f5f6fa; margin: 0; padding: 20px; }
+.container { max-width: 1000px; margin: auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+h1 { text-align: center; color: #2f3640; margin-bottom: 20px; }
+.form-row, .filter-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 15px; }
+input, select, button { padding: 10px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; }
+select { min-width: 150px; }
+input[type="number"], input[type="date"] { width: 150px; }
+button { cursor: pointer; border: none; transition: 0.3s; }
+.btn-add-employee { background-color: #00a8ff; color: white; font-weight: bold; width: 40px; height: 40px; font-size: 20px; }
+.btn-add-employee:hover { background-color: #0097e6; }
+.btn-add-withdrawal { background-color: #44bd32; color: white; font-weight: bold; padding: 10px 15px; }
+.btn-add-withdrawal:hover { background-color: #4cd137; }
+.total-card { background-color: #ff6b81; color: white; border-radius: 12px; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.total-card span { display: block; font-size: 32px; margin-top: 5px; }
+.employee-cards { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+.employee-card { background-color: #4cd137; color: white; border-radius: 12px; padding: 15px; flex: 1 1 150px; text-align: center; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: relative; }
+.employee-card span { display: block; font-size: 24px; margin-top: 10px; }
+.employee-card .delete-btn { position: absolute; top: 5px; right: 5px; background: #e84118; border: none; border-radius: 50%; width: 25px; height: 25px; color: white; font-weight: bold; cursor: pointer; line-height: 22px; }
+.employee-card .delete-btn:hover { background: #c23616; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { text-align: center; padding: 12px; border-bottom: 1px solid #dcdde1; }
+th { background-color: #f1f2f6; color: #2f3640; }
+tr:nth-child(even) { background-color: #f9f9f9; }
+.btn-delete { background-color: #e84118; color: white; border-radius: 6px; padding: 6px 12px; }
+.btn-delete:hover { background-color: #c23616; }
+.btn-back { margin-bottom: 20px; background-color: #353b48; color: white; padding: 10px 20px; border-radius: 8px; display: inline-block; }
+.btn-back:hover { background-color: #2f3640; }
+
+/* السلف المرسلة من الموظف */
+.employee-sent { background-color: #fff3cd; }
+.employee-sent td { color: #e84118; font-weight: bold; }
+
+/* السلف المسجلة يدويًا من المدير */
+.employee-manual { background-color: #d4edda; }
+.employee-manual td { color: #155724; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<button class="btn-back" onclick="goBack()">العودة لصفحة التحكم</button>
+
+<h1>سحوبات الموظفين</h1>
+
+<div class="form-row">
+    <select id="employeeName">
+        <option value="">اختر الموظف</option>
+    </select>
+    <button class="btn-add-employee" onclick="addEmployee()">+</button>
+    <input type="number" id="withdrawAmount" placeholder="المبلغ">
+    <input type="date" id="withdrawDate">
+    <button class="btn-add-withdrawal" onclick="addWithdrawal()">إضافة سحب</button>
+</div>
+
+<div class="filter-row">
+    <label>فلتر من:</label>
+    <input type="date" id="filterFrom">
+    <label>إلى:</label>
+    <input type="date" id="filterTo">
+    <button onclick="applyFilter()">عرض</button>
+    <button onclick="clearFilter()">مسح الفلتر</button>
+</div>
+
+<button onclick="acceptAllEmployeeLoans()" style="background-color:#ff9f1a; color:white; padding:10px 15px; border-radius:8px; font-weight:bold; margin-bottom:10px; cursor:pointer;">
+استلام جميع السلف المرسلة من الموظفين
+</button>
+
+<div class="total-card">
+    إجمالي السحوبات
+    <span id="totalWithdrawals">0</span> ريال
+</div>
+
+<div class="employee-cards" id="employeeCards"></div>
+
+<table id="withdrawalsTable">
+    <thead>
+        <tr>
+            <th>الموظف</th>
+            <th>المبلغ</th>
+            <th>التاريخ</th>
+            <th>الوقت</th>
+            <th>حذف</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+</div>
+
+<script>
+// البيانات
+let employees = JSON.parse(localStorage.getItem('employees')) || ["أحمد","ياسر","محمد"];
+let withdrawals = JSON.parse(localStorage.getItem('withdrawals')) || [];
+let filteredWithdrawals = null;
+localStorage.setItem('employees', JSON.stringify(employees));
+localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+
+// توليد ID فريد للسلفة
+function generateID() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// تنسيق الوقت بصيغة 12 ساعة
+function formatTime12(date){
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    return hours + ':' + minutes + ' ' + ampm;
+}
+
+// الموظفون
+function populateEmployees() {
+    const select = document.getElementById('employeeName');
+    select.innerHTML = '<option value="">اختر الموظف</option>';
+    employees.forEach(emp => {
+        let option = document.createElement('option');
+        option.value = emp;
+        option.textContent = emp;
+        select.appendChild(option);
+    });
+}
+
+// إضافة موظف
+function addEmployee() {
+    let newEmployee = prompt('أدخل اسم الموظف الجديد:');
+    if(newEmployee && !employees.includes(newEmployee)) {
+        employees.push(newEmployee);
+        localStorage.setItem('employees', JSON.stringify(employees));
+        populateEmployees();
+        displayEmployeeCards();
+    }
+}
+
+// إضافة سحب يدوي من المدير
+function addWithdrawal() {
+    const employee = document.getElementById('employeeName').value;
+    const amount = document.getElementById('withdrawAmount').value;
+    const date = document.getElementById('withdrawDate').value;
+    if(employee === '' || amount === '' || date === '') { alert('أكمل جميع الحقول'); return; }
+    const now = new Date();
+    const timeNow = formatTime12(now);
+    const newWithdrawal = {id: generateID(), employee, amount: parseFloat(amount), date, sentByEmployee: false, receivedTime: timeNow};
+    withdrawals.push(newWithdrawal);
+    localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+    document.getElementById('employeeName').value = '';
+    document.getElementById('withdrawAmount').value = '';
+    document.getElementById('withdrawDate').value = '';
+    applyFilter();
+}
+
+// إضافة سلفة من الموظف (تظهر عند المدير)
+function addEmployeeSentWithdrawal(emp, amount){
+    const now = new Date();
+    const date = now.toISOString().split('T')[0];
+    const time = formatTime12(now);
+    const id = generateID();
+    const withdrawal = {id, employee: emp, amount: parseFloat(amount), date, sentByEmployee: true, sentTime: time};
+
+    // إضافة عند المدير
+    withdrawals.push(withdrawal);
+    localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+
+    // إضافة نسخة عند الموظف
+    const empKey = 'employee_withdrawals_' + emp;
+    let empWithdrawals = JSON.parse(localStorage.getItem(empKey)) || [];
+    empWithdrawals.push(withdrawal);
+    localStorage.setItem(empKey, JSON.stringify(empWithdrawals));
+
+    applyFilter();
+}
+
+// عرض السحوبات
+function displayWithdrawals() {
+    const tbody = document.querySelector('#withdrawalsTable tbody');
+    tbody.innerHTML = '';
+    let list = filteredWithdrawals || withdrawals;
+    let total = 0;
+    list.forEach((w,index)=>{
+        total += parseFloat(w.amount);
+        let rowClass = w.sentByEmployee ? "employee-sent" : "employee-manual";
+        let displayTime = w.sentByEmployee ? (w.sentTime || "-") : w.receivedTime;
+        let badge = w.sentByEmployee ? `<div style="font-size:14px;">أُرسلت من قبل الموظف</div>` : '';
+        let row = document.createElement('tr');
+        row.className = rowClass;
+        row.innerHTML = `
+            <td>${w.employee}${badge}</td>
+            <td>${w.amount}</td>
+            <td>${w.date}</td>
+            <td>${displayTime}</td>
+            <td><button class="btn-delete" onclick="deleteWithdrawal('${w.id}')">حذف</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+    document.getElementById('totalWithdrawals').textContent = total.toFixed(2);
+    displayEmployeeCards(list);
+}
+
+// عرض بطاقات الموظفين
+function displayEmployeeCards(list=null) {
+    const container = document.getElementById('employeeCards');
+    container.innerHTML = '';
+    let displayList = list || withdrawals;
+    employees.forEach(emp=>{
+        let total = displayList.filter(w=>w.employee===emp).reduce((sum,w)=>sum+parseFloat(w.amount),0);
+        let card = document.createElement('div');
+        card.className='employee-card';
+        card.innerHTML=`
+            <button class="delete-btn" onclick="deleteEmployee('${emp}')">×</button>
+            ${emp}<span>${total.toFixed(2)} ريال</span>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// حذف السلفة
+function deleteWithdrawal(id){
+    if(confirm('هل أنت متأكد من حذف هذا السحب؟')) {
+        const withdrawalToDelete = withdrawals.find(w=>w.id===id);
+        if(!withdrawalToDelete) return;
+
+        // حذف نسخة الموظف إذا كانت مرسلة منه
+        if(withdrawalToDelete.sentByEmployee){
+            const empKey = 'employee_withdrawals_' + withdrawalToDelete.employee;
+            let empWithdrawals = JSON.parse(localStorage.getItem(empKey)) || [];
+            empWithdrawals = empWithdrawals.filter(w => w.id !== withdrawalToDelete.id);
+            localStorage.setItem(empKey, JSON.stringify(empWithdrawals));
+        }
+
+        // حذف من المدير
+        withdrawals = withdrawals.filter(w => w.id !== withdrawalToDelete.id);
+        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+        applyFilter();
+    }
+}
+
+// حذف موظف كامل
+function deleteEmployee(empName) {
+    if(confirm(`هل أنت متأكد من حذف الموظف ${empName} وكل سحوباته؟`)) {
+        employees = employees.filter(e=>e!==empName);
+        localStorage.setItem('employees', JSON.stringify(employees));
+        withdrawals = withdrawals.filter(w=>w.employee!==empName);
+        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+        const empKey = 'employee_withdrawals_' + empName;
+        localStorage.removeItem(empKey);
+        populateEmployees();
+        applyFilter();
+    }
+}
+
+// فلترة
+function applyFilter(){
+    let from=document.getElementById('filterFrom').value;
+    let to=document.getElementById('filterTo').value;
+    if(from && to && from>to) [from,to]=[to,from];
+    filteredWithdrawals = withdrawals.filter(w=>{
+        if(from && to) return w.date>=from && w.date<=to;
+        else if(from) return w.date>=from;
+        else if(to) return w.date<=to;
+        else return true;
+    });
+    displayWithdrawals();
+}
+
+// مسح الفلتر
+function clearFilter(){
+    document.getElementById('filterFrom').value='';
+    document.getElementById('filterTo').value='';
+    filteredWithdrawals = null;
+    displayWithdrawals();
+}
+
+// استلام جميع السلف المرسلة من الموظفين
+function acceptAllEmployeeLoans() {
+    if(confirm("هل أنت متأكد من استلام جميع السلف المرسلة من الموظفين؟")) {
+        const now = new Date();
+        const currentTime = formatTime12(now);
+        withdrawals.forEach(w=>{
+            if(w.sentByEmployee === true){
+                w.sentByEmployee = false;
+                w.receivedTime = currentTime;
+            }
+        });
+        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+        applyFilter();
+        alert("تم استلام جميع السلف المرسلة من الموظفين");
+    }
+}
+
+// العودة
+function goBack(){ window.location.href='dashboard.html'; }
+
+window.addEventListener('storage',(e)=>{
+    if(e.key==='withdrawals'){
+        withdrawals = JSON.parse(e.newValue || '[]');
+        applyFilter();
+    }
+});
+
+window.onload = ()=>{
+    populateEmployees();
+    displayWithdrawals();
+};
+</script>
+</body>
+</html>
