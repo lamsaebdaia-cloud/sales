@@ -15,143 +15,31 @@
     --card-bg:#222;
     --card-text:#fff;
 }
-
-/* عام */
-body{
-    margin:0;
-    font-family:'Cairo',sans-serif;
-    background: linear-gradient(180deg,#000,#111);
-    color:#fff;
-    padding:20px;
-}
-.container{
-    max-width:1200px;
-    margin:0 auto;
-}
-
-/* العنوان */
-header{
-    text-align:center;
-    margin-bottom:20px;
-}
-header h1{
-    color:var(--gold);
-    font-size:2rem;
-    text-shadow:0 0 10px var(--gold);
-    margin-bottom:5px;
-}
-
-/* بطاقات ملخص المحل */
-.cards-row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:16px;
-    justify-content:center;
-    margin-bottom:20px;
-    flex-direction: row-reverse;
-}
-.card{
-    background:var(--card-bg);
-    flex:1 1 180px;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 0 10px rgba(255,215,0,0.3);
-    text-align:center;
-    min-width:150px;
-    transition:0.3s;
-    border:2px solid var(--gold);
-}
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 25px var(--gold);
-}
-.card h3{
-    margin:0 0 10px;
-    font-size:1rem;
-    text-shadow:0 0 6px var(--gold);
-}
-.card p{
-    margin:6px 0;
-    font-size:1.1rem;
-    font-weight:bold;
-    padding:4px 6px;
-    border-radius:6px;
-}
-
-/* ألوان خاصة لكل بطاقة */
+body{margin:0;font-family:'Cairo',sans-serif;background: linear-gradient(180deg,#000,#111);color:#fff;padding:20px;}
+.container{max-width:1200px;margin:0 auto;}
+header{text-align:center;margin-bottom:20px;}
+header h1{color:var(--gold);font-size:2rem;text-shadow:0 0 10px var(--gold);margin-bottom:5px;}
+.cards-row{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:20px;flex-direction: row-reverse;}
+.card{background:var(--card-bg);flex:1 1 180px;padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(255,215,0,0.3);text-align:center;min-width:150px;transition:0.3s;border:2px solid var(--gold);}
+.card:hover{transform:translateY(-5px);box-shadow:0 0 25px var(--gold);}
+.card h3{margin:0 0 10px;font-size:1rem;text-shadow:0 0 6px var(--gold);}
+.card p{margin:6px 0;font-size:1.1rem;font-weight:bold;padding:4px 6px;border-radius:6px;}
 .card-summary:nth-child(1){background:var(--blue);}
 .card-summary:nth-child(2){background:var(--orange);}
 .card-summary:nth-child(3){background:var(--red);}
 .card-summary:nth-child(4){background:var(--green);}
-
-/* بطاقات الموظفين */
 .employee-card p:nth-child(2){background:#2c3e50;}
 .employee-card p:nth-child(3){background:#16a085;}
 .employee-card p:nth-child(4){background:#c0392b;}
 .employee-card p:nth-child(5){background:#8e44ad;}
-
-/* فلتر وأزرار */
-.filter-row{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:10px;
-    margin-bottom:20px;
-    flex-direction: row-reverse;
-}
-.filter-row input{
-    padding:6px;
-    border-radius:6px;
-    border:none;
-    background:#222;
-    color:#fff;
-    text-align:center;
-}
-.filter-buttons{
-    display:flex;
-    gap:10px;
-    flex-direction: row-reverse;
-}
-.gold-btn{
-    padding:6px 12px;
-    border-radius:6px;
-    border:none;
-    background:var(--gold);
-    color:#111;
-    font-weight:bold;
-    cursor:pointer;
-}
-.gold-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 15px var(--gold);
-}
-
-/* فلتر الموظفين */
-.employee-filter{
-    text-align:center;
-    margin-bottom:20px;
-}
-.employee-filter select{
-    padding:8px 12px;
-    border-radius:6px;
-    border:2px solid var(--gold);
-    background:#222;
-    color:#fff;
-    font-size:16px;
-    cursor:pointer;
-}
-
-/* responsive */
-@media(max-width:768px){
-    .cards-row{
-        flex-direction:column !important;
-        align-items:center;
-    }
-    .card{
-        min-width:80%;
-        margin-bottom:10px;
-    }
-}
+.filter-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px;flex-direction: row-reverse;}
+.filter-row input{padding:6px;border-radius:6px;border:none;background:#222;color:#fff;text-align:center;}
+.filter-buttons{display:flex;gap:10px;flex-direction: row-reverse;}
+.gold-btn{padding:6px 12px;border-radius:6px;border:none;background:var(--gold);color:#111;font-weight:bold;cursor:pointer;}
+.gold-btn:hover{transform:translateY(-2px);box-shadow:0 0 15px var(--gold);}
+.employee-filter{text-align:center;margin-bottom:20px;}
+.employee-filter select{padding:8px 12px;border-radius:6px;border:2px solid var(--gold);background:#222;color:#fff;font-size:16px;cursor:pointer;}
+@media(max-width:768px){.cards-row{flex-direction:column !important;align-items:center;}.card{min-width:80%;margin-bottom:10px;}}
 </style>
 </head>
 <body>
@@ -160,7 +48,6 @@ header h1{
         <h1>ملخص المبيعات والشهرية</h1>
     </header>
 
-    <!-- فلتر التاريخ -->
     <div class="filter-row">
         <label for="startDate">من:</label>
         <input type="date" id="startDate">
@@ -173,7 +60,6 @@ header h1{
         </div>
     </div>
 
-    <!-- بطاقات ملخص المحل -->
     <div class="cards-row" id="summaryCards">
         <div class="card card-summary"><h3>إجمالي الأرادات الشهرية</h3><p id="totalMonth">0</p></div>
         <div class="card card-summary"><h3>ارادات المحل</h3><p id="halfMonth">0</p></div>
@@ -181,48 +67,42 @@ header h1{
         <div class="card card-summary"><h3>صافي الربح النهائي</h3><p id="netProfit">0</p></div>
     </div>
 
-    <!-- فلتر الموظفين -->
     <div class="employee-filter">
         <select id="employeeSelect" onchange="filterEmployeeCards()">
             <option value="all">عرض الجميع</option>
         </select>
     </div>
 
-    <!-- بطاقات الموظفين -->
     <h2 style="text-align:center; margin-bottom:10px;">بطاقات الموظفين</h2>
     <div class="cards-row" id="employeeCards"></div>
 </div>
 
 <script>
-// دوال مساعدة
 function toNumber(v){let n=parseFloat(v);return isNaN(n)?0:n;}
-function extractDateTime(record){
-    let date='', time='';
-    if(record.datetime){const parts=record.datetime.split('T'); date=parts[0]; if(parts[1]) time=parts[1].split('.')[0];}
-    else{date=record.date||''; if(record.time){time=record.time.toString();}}
-    return {date,time};
-}
+function extractDateTime(record){let date='', time='';if(record.datetime){const parts=record.datetime.split('T'); date=parts[0]; if(parts[1]) time=parts[1].split('.')[0];} else{date=record.date||''; if(record.time){time=record.time.toString();}} return {date,time};}
 function getEmployeeFromRecord(rec){return (rec.employee||rec.user||rec.username||'').toString();}
 
-// تحميل ملخص المحل
 function loadSummaryCards(start=null,end=null){
     let sales = JSON.parse(localStorage.getItem('salesData')||'[]');
     let salfs = JSON.parse(localStorage.getItem('salfData')||'[]');
-    let expenses = JSON.parse(localStorage.getItem('expensesData')||'[]');
+    let expenses = JSON.parse(localStorage.getItem('expenses')||'[]');
 
     let totalMonth=0, halfMonth=0, expensesMonth=0;
+
     sales.forEach(s=>{
         const dt=extractDateTime(s);
         if((!start || dt.date>=start) && (!end || dt.date<=end)){
             totalMonth += toNumber(s.amount||s.price||0);
         }
     });
+
     expenses.forEach(e=>{
         const dt=extractDateTime(e);
         if((!start || dt.date>=start) && (!end || dt.date<=end)){
             expensesMonth += toNumber(e.amount||0);
         }
     });
+
     halfMonth = totalMonth/2;
     let netProfit = halfMonth - expensesMonth;
 
@@ -232,7 +112,6 @@ function loadSummaryCards(start=null,end=null){
     document.getElementById('netProfit').textContent = netProfit.toFixed(2);
 }
 
-// تحميل بطاقات الموظفين + قائمة الأسماء
 function loadEmployeeCards(start=null,end=null){
     let sales = JSON.parse(localStorage.getItem('salesData')||'[]');
     let salfs = JSON.parse(localStorage.getItem('salfData')||'[]');
@@ -255,7 +134,6 @@ function loadEmployeeCards(start=null,end=null){
         }
     });
 
-    // تعبئة قائمة أسماء الموظفين
     const select = document.getElementById('employeeSelect');
     select.innerHTML = `<option value="all">عرض الجميع</option>`;
     Object.keys(employees).forEach(emp=>{
@@ -265,7 +143,6 @@ function loadEmployeeCards(start=null,end=null){
     renderEmployeeCards(employees);
 }
 
-// عرض البطاقات وفق الفلتر
 function renderEmployeeCards(employees){
     const filterValue = document.getElementById('employeeSelect').value;
     const container = document.getElementById('employeeCards');
@@ -290,22 +167,16 @@ function renderEmployeeCards(employees){
     }
 }
 
-// فلترة عند اختيار اسم
 function filterEmployeeCards(){
     const selected = document.getElementById('employeeSelect').value;
     const cards = document.querySelectorAll('.employee-card');
 
     cards.forEach(card => {
         const name = card.getAttribute('data-name');
-        if(selected === "all" || name === selected){
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
+        card.style.display = (selected === "all" || name === selected) ? 'block' : 'none';
     });
 }
 
-// تطبيق فلتر التاريخ
 function applyFilter(){
     const start=document.getElementById('startDate').value;
     const end=document.getElementById('endDate').value;
@@ -318,11 +189,7 @@ function resetFilter(){
     loadSummaryCards();
     loadEmployeeCards();
 }
-
-// زر العودة
-function goBack(){
-    window.location.href='dashboard.html';
-}
+function goBack(){ window.location.href='dashboard.html'; }
 
 window.onload=()=>{
     loadSummaryCards();
