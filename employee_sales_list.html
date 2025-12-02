@@ -3,29 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عرض المبيعات والسلف - صالون لمسة إبداعية</title>
+<title>لوحة تحكم الموظف - صالون لمسة إبداعية</title>
 <style>
+:root{
+    --gold:#FFD700;
+    --daily-bg:#2E2B2B;
+    --monthly-bg:#1E3A5F;
+    --card-text:#fff;
+    --panel-bg:#111;
+}
+
 body {
     font-family:'Cairo',sans-serif;
     background: linear-gradient(180deg,#000,#111);
     color:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-    min-height:100vh;
     margin:0;
-    padding:20px 0;
+    padding:20px;
 }
+
+/* الرأس والشعار */
 header {
     text-align:center;
     margin-bottom:20px;
 }
 header .logo-container {
     display:inline-block;
-    border:4px solid gold;
+    border:4px solid var(--gold);
     border-radius:50%;
     padding:5px;
-    box-shadow:0 0 20px gold;
+    box-shadow:0 0 20px var(--gold);
     margin-bottom:10px;
 }
 header .logo-container img {
@@ -36,64 +42,70 @@ header .logo-container img {
 }
 header h1 {
     font-size:1.8rem;
-    color:gold;
+    color:var(--gold);
     margin:0;
-    text-shadow:0 0 10px gold;
+    text-shadow:0 0 10px var(--gold);
 }
-.sales-list-box {
-    background:#111;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 0 35px rgba(255,215,0,0.5);
-    width:90%;
-    max-width:900px;
+
+/* البطاقات اليومية والشهرية */
+.cards-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    margin-bottom:15px;
+}
+.cards-row.daily { flex-direction: row-reverse; }
+.cards-row.monthly { flex-direction: row-reverse; }
+
+.card{
+    background:var(--daily-bg);
+    padding:15px 10px;
+    border-radius:10px;
+    box-shadow:0 0 12px rgba(255,215,0,0.5);
     text-align:center;
+    min-width:100px;
+    flex:1 1 120px;
     display:flex;
     flex-direction:column;
-    align-items:center;
-}
-.cards-row {
-    display:flex;
-    gap:10px;
-    margin-bottom:15px;
-    flex-wrap:wrap;
     justify-content:center;
+    align-items:center;
+    color:var(--card-text);
 }
-.card {
-    background:#222;
-    padding:10px 15px;
-    border-radius:10px;
-    min-width:100px;
-    box-shadow:0 0 10px rgba(255,215,0,0.5);
-    text-align:center;
-    flex:1;
-}
-.card h3 { margin:0 0 5px; color:gold; font-size:1rem; text-shadow:0 0 5px gold; }
-.card p { margin:0; font-size:1rem; }
+.cards-row.monthly .card{ background:var(--monthly-bg); }
+.card h3{margin:0 0 5px;font-size:1rem;text-shadow:0 0 5px var(--gold);}
+.card p{margin:0;font-size:1rem;}
+
+/* فلتر + زر الرجوع */
 .filter-row {
-    display:flex;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap:10px;
-    margin-bottom:10px;
-    justify-content:center;
-    flex-wrap:wrap;
+    justify-items:center;
     align-items:center;
+    margin-bottom:15px;
+}
+.filter-row input {
+    padding:6px 8px;
+    border-radius:6px;
+    border:none;
+    background:var(--panel-bg);
+    color:#fff;
+    text-align:right;
+    width:100%;
 }
 .filter-buttons {
     display:flex;
-    gap:10px;
-}
-.filter-row input {
-    padding:6px;
-    border-radius:6px;
-    border:none;
-    background:#222;
-    color:#fff;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
 }
 .gold-btn {
     padding:6px 12px;
     border-radius:6px;
     border:none;
-    background:gold;
+    background:var(--gold);
     color:#111;
     font-weight:bold;
     cursor:pointer;
@@ -101,13 +113,13 @@ header h1 {
 }
 .gold-btn:hover {
     transform:translateY(-2px);
-    box-shadow:0 0 15px gold;
+    box-shadow:0 0 15px var(--gold);
 }
+
+/* زر العودة */
 .back-btn {
-    align-self:flex-start;
-    margin-bottom:15px;
     padding:8px 12px;
-    background:gold;
+    background:var(--gold);
     color:#111;
     font-weight:bold;
     border:none;
@@ -117,20 +129,53 @@ header h1 {
 }
 .back-btn:hover {
     transform:translateY(-2px);
-    box-shadow:0 0 20px gold;
+    box-shadow:0 0 20px var(--gold);
 }
+
+/* السلف */
+.salf-section {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:15px;
+}
+.salf-section input {
+    padding:8px;
+    border-radius:6px;
+    border:none;
+    background:#222;
+    color:#fff;
+    text-align:right;
+    min-width:120px;
+    flex:1 1 140px;
+}
+.salf-section button {
+    padding:8px 12px;
+    border-radius:6px;
+    border:none;
+    background:var(--gold);
+    color:#111;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* الجداول */
 .table-section {
     width:100%;
-    margin-top:15px;
+}
+.table-wrap {
+    width:100%;
+    overflow-x:hidden;
+    margin-bottom:20px;
 }
 table {
     width:100%;
     border-collapse:collapse;
-    margin-top:10px;
-    background:#222;
-    border-radius:10px;
-    overflow:hidden;
     table-layout: fixed;
+    background:#222;
+    border-radius:8px;
+    overflow:hidden;
 }
 table th, table td {
     padding:8px;
@@ -138,89 +183,72 @@ table th, table td {
     border-bottom:1px solid #444;
     word-wrap: break-word;
 }
-table th { background:#333; color:gold; }
-.salf-section {
-    margin:15px 0;
-    width:100%;
-    max-width:400px;
-    background:#111;
-    padding:10px;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-}
-.salf-section input {
-    width:60%;
-    padding:8px;
-    border-radius:6px;
-    border:none;
-    background:#222;
-    color:#fff;
-    margin-right:8px;
-    text-align:right;
-}
-.salf-section button {
-    padding:8px 12px;
-    border-radius:6px;
-    border:none;
-    background:gold;
-    color:#111;
-    font-weight:bold;
-    cursor:pointer;
-}
+table th { background:#333; color:var(--gold); }
+
+/* رسائل التحذير */
 .warning {
     color:#ffcc00;
     margin-top:8px;
     font-size:0.95rem;
 }
+
+/* Responsive */
+@media(max-width:768px){
+    .card{ flex:1 1 100px; min-width:90px; }
+    .filter-row input, .filter-row button, .salf-section input, .salf-section button{ font-size:0.85rem; padding:5px; }
+    table th, table td{ font-size:0.8rem; padding:4px; }
+}
 @media(max-width:480px){
-    .card { min-width:80px; font-size:0.9rem; }
-    table th, table td { font-size:0.8rem; padding:4px; }
-    .filter-row input, .filter-row button, .salf-section input, .salf-section button { font-size:0.85rem; padding:4px; }
-    .back-btn { font-size:0.85rem; padding:6px; }
+    .card{ min-width:80px; min-height:90px; font-size:0.8rem; }
+    .salf-section input, .salf-section button{ flex:1 1 45%; }
 }
 </style>
 </head>
 <body>
 <div class="sales-list-box">
-    <button class="back-btn" onclick="backToSales()">رجوع لتسجيل المبيعات</button>
     <header>
         <div class="logo-container"><img src="logo.jpg" alt="Logo"></div>
-        <h1>عرض المبيعات والسلف</h1>
+        <h1>لوحة تحكم الموظف</h1>
         <p id="welcomeTxt" style="margin-top:8px;color:#fff;font-size:0.95rem;"></p>
         <p id="warnTxt" class="warning" style="display:none;"></p>
     </header>
 
-    <h2 class="section-title">إجمالي المبيعات</h2>
-    <div class="cards-row">
-        <div class="card"><h3>توتل اليومي</h3><p id="totalToday">0</p></div>
+    <!-- البطاقات اليومية -->
+    <h2 style="text-align:center;">إجمالي المبيعات اليومية</h2>
+    <div class="cards-row daily">
         <div class="card"><h3>كاش اليومي</h3><p id="cashToday">0</p></div>
         <div class="card"><h3>شبكة اليومي</h3><p id="cardToday">0</p></div>
-    </div>
-    <div class="cards-row">
-        <div class="card"><h3>توتل الشهري</h3><p id="totalMonth">0</p></div>
-        <div class="card"><h3>كاش الشهرى</h3><p id="cashMonth">0</p></div>
-        <div class="card"><h3>شبكة الشهرى</h3><p id="cardMonth">0</p></div>
+        <div class="card"><h3>توتل اليومي</h3><p id="totalToday">0</p></div>
     </div>
 
+    <!-- البطاقات الشهرية -->
+    <h2 style="text-align:center;">إجمالي المبيعات الشهرية</h2>
+    <div class="cards-row monthly">
+        <div class="card"><h3>كاش الشهري</h3><p id="cashMonth">0</p></div>
+        <div class="card"><h3>شبكة الشهري</h3><p id="cardMonth">0</p></div>
+        <div class="card"><h3>توتل الشهري</h3><p id="totalMonth">0</p></div>
+    </div>
+
+    <!-- فلتر + زر العودة -->
     <div class="filter-row">
-        <label for="startDate">من:</label>
-        <input type="date" id="startDate">
-        <label for="endDate">إلى:</label>
-        <input type="date" id="endDate">
+        <input type="date" id="startDate" placeholder="من">
+        <input type="date" id="endDate" placeholder="إلى">
         <div class="filter-buttons">
             <button class="gold-btn" onclick="applyFilter()">تطبيق الفلتر</button>
             <button class="gold-btn" onclick="resetFilter()">إعادة الضبط</button>
+            <button class="back-btn" onclick="backToSales()">رجوع</button>
         </div>
     </div>
 
+    <!-- السلف -->
     <div class="salf-section">
         <input type="number" id="salfAmount" placeholder="المبلغ">
         <button onclick="addSalf()">تسجيل السلفة</button>
     </div>
 
+    <!-- الجداول -->
     <div class="table-section">
-        <h2 class="section-title">جدول المبيعات</h2>
+        <h2 style="text-align:center;">جدول المبيعات</h2>
         <table>
             <thead>
                 <tr>
@@ -234,7 +262,7 @@ table th { background:#333; color:gold; }
             <tbody id="salesTable"></tbody>
         </table>
 
-        <h2 class="section-title">جدول السلف</h2>
+        <h2 style="text-align:center;">جدول السلف</h2>
         <table>
             <thead>
                 <tr>
@@ -250,121 +278,79 @@ table th { background:#333; color:gold; }
 </div>
 
 <script>
-// ************** تحديد اسم الموظف وتمريره في الرابط **************
-function getEmployeeFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('user');
-}
-
-function getEmployeeFromStorage() {
-    const POSSIBLE_KEYS = ['loggedEmployee','loggedUser','username','user','logged_employee','currentUser'];
-    for(const k of POSSIBLE_KEYS){
-        const v = localStorage.getItem(k);
-        if(v && typeof v==='string' && v.trim()!=='') return v.trim();
-    }
-    return null;
-}
-
-// جلب الاسم النهائي
+// تحميل البيانات والبطاقات والجداول
+function getEmployeeFromURL(){const params=new URLSearchParams(window.location.search);return params.get('user');}
+function getEmployeeFromStorage(){const keys=['loggedEmployee','loggedUser','username','user','logged_employee','currentUser'];for(const k of keys){const v=localStorage.getItem(k);if(v&&v.trim()!=='') return v.trim();}return null;}
 let employeeNameRaw = getEmployeeFromURL() || getEmployeeFromStorage();
 let employeeName = employeeNameRaw ? employeeNameRaw.trim() : null;
-
-// إذا الاسم موجود في localStorage ولم يكن في الرابط، أضفه تلقائياً
-if(!getEmployeeFromURL() && employeeNameRaw){
-    const url = new URL(window.location);
-    url.searchParams.set('user', employeeNameRaw);
-    history.replaceState(null, '', url);
-}
-
-// عرض الاسم في الصفحة
-document.getElementById('welcomeTxt').textContent = employeeName ? 
-    'الموظف الحالي: ' + employeeName : 
-    'لم يتم العثور على موظف مسجل — سيتم عرض كل السجلات';
-
-// ************** الدوال المساعدة **************
+if(!getEmployeeFromURL() && employeeNameRaw){const url=new URL(window.location);url.searchParams.set('user', employeeNameRaw);history.replaceState(null, '', url);}
+document.getElementById('welcomeTxt').textContent = employeeName ? 'الموظف الحالي: ' + employeeName : 'عرض كل السجلات';
 function backToSales(){ window.location.href='employee_sales.html'; }
 function formatTime12(date){let h=date.getHours(),m=date.getMinutes(),ampm=h>=12?'PM':'AM';h=h%12||12;m=m<10?'0'+m:m;return h+':'+m+' '+ampm;}
 function toNumber(v){let n=parseFloat(v);return isNaN(n)?0:n;}
 function getEmployeeFromRecord(rec){ return (rec.employee || rec.user || rec.username || rec.staff || '').toString(); }
+function extractDateTime(record){let date='';let time='';if(record.datetime){const parts=record.datetime.split('T');date=parts[0];if(parts[1])time=parts[1].split('.')[0];}else{date=record.date||'';if(record.time){let t=record.time.toString();if(t.includes("AM")||t.includes("PM"))time=t;else if(/^\d{2}:\d{2}$/.test(t))time=t+":00";else time=t;}}return {date,time};}
+function normalizeName(name){ return name? name.toString().trim().toLowerCase() : ''; }
 
-// ************** تحميل الجداول **************
 function loadSalesTable(filteredData=null){
-    let sales = filteredData!==null ? filteredData.slice() : JSON.parse(localStorage.getItem('salesData')||'[]');
-    sales = sales.filter(s => employeeName ? normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName) : true);
-    const table=document.getElementById('salesTable');
-    table.innerHTML='';
+    let sales=filteredData!==null?filteredData.slice():JSON.parse(localStorage.getItem('salesData')||'[]');
+    sales=sales.filter(s=>employeeName?normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName):true);
+    const table=document.getElementById('salesTable');table.innerHTML='';
     sales.forEach(s=>{
         const emp=getEmployeeFromRecord(s)||'';
         const amt=toNumber(s.amount||s.price||0);
         const method=(s.method||s.payment||'').toString();
-        const date=s.date||(s.datetime?s.datetime.split('T')[0]:'');
-        const time=s.time||(s.datetime?s.datetime.split('T')[1]:'');
-        table.innerHTML+=`<tr><td>${emp}</td><td>${amt.toFixed(2)}</td><td>${method}</td><td>${date}</td><td>${time}</td></tr>`;
+        const dt=extractDateTime(s);
+        table.innerHTML+=`<tr><td>${emp}</td><td>${amt.toFixed(2)}</td><td>${method}</td><td>${dt.date}</td><td>${dt.time}</td></tr>`;
     });
 }
 
 function loadSalfTable(filteredData=null){
-    let salfs = filteredData!==null ? filteredData.slice() : JSON.parse(localStorage.getItem('salfData')||'[]');
-    salfs = salfs.filter(s => employeeName ? normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName) : true);
-    const table=document.getElementById('salfTable');
-    table.innerHTML='';
+    let salfs=filteredData!==null?filteredData.slice():JSON.parse(localStorage.getItem('salfData')||'[]');
+    salfs=salfs.filter(s=>employeeName?normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName):true);
+    const table=document.getElementById('salfTable');table.innerHTML='';
     salfs.forEach(s=>{
-        const amt=toNumber(s.amount||0);
         const emp=getEmployeeFromRecord(s)||'';
-        const date=s.date||(s.datetime?s.datetime.split('T')[0]:'');
-        const time=s.time||'';
-        table.innerHTML+=`<tr><td>${emp}</td><td>${amt.toFixed(2)}</td><td>${date}</td><td>${time}</td></tr>`;
+        const amt=toNumber(s.amount||0);
+        const dt=extractDateTime(s);
+        table.innerHTML+=`<tr><td>${emp}</td><td>${amt.toFixed(2)}</td><td>${dt.date}</td><td>${dt.time}</td></tr>`;
     });
 }
 
-// ************** تحميل البطاقات **************
 function loadCards(){
-    let sales = JSON.parse(localStorage.getItem('salesData')||'[]');
-    sales = sales.filter(s => employeeName ? normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName) : true);
-
-    let totalToday=0, cashToday=0, cardToday=0;
-    let totalMonth=0, cashMonth=0, cardMonth=0;
+    let sales=JSON.parse(localStorage.getItem('salesData')||'[]');
+    sales=sales.filter(s=>employeeName?normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName):true);
+    let totalToday=0,cashToday=0,cardToday=0,totalMonth=0,cashMonth=0,cardMonth=0;
     const today=new Date().toISOString().split('T')[0];
     const month=today.slice(0,7);
-
     sales.forEach(s=>{
         const amt=toNumber(s.amount||s.price||0);
-        const method=(s.method||s.payment||'').toString();
-        const date=s.date||(s.datetime?s.datetime.split('T')[0]:'');
-        if(date===today){ totalToday+=amt; if(method.toLowerCase()==='cash') cashToday+=amt; else cardToday+=amt; }
-        if((date||'').slice(0,7)===month){ totalMonth+=amt; if(method.toLowerCase()==='cash') cashMonth+=amt; else cardMonth+=amt; }
+        const method=(s.method||s.payment||'').toString().toLowerCase();
+        const dt=extractDateTime(s);
+        if(dt.date===today){totalToday+=amt;if(method==='cash')cashToday+=amt;else cardToday+=amt;}
+        if((dt.date||'').slice(0,7)===month){totalMonth+=amt;if(method==='cash')cashMonth+=amt;else cardMonth+=amt;}
     });
-
-    document.getElementById('totalToday').textContent=totalToday.toFixed(2);
     document.getElementById('cashToday').textContent=cashToday.toFixed(2);
     document.getElementById('cardToday').textContent=cardToday.toFixed(2);
-    document.getElementById('totalMonth').textContent=totalMonth.toFixed(2);
+    document.getElementById('totalToday').textContent=totalToday.toFixed(2);
     document.getElementById('cashMonth').textContent=cashMonth.toFixed(2);
     document.getElementById('cardMonth').textContent=cardMonth.toFixed(2);
+    document.getElementById('totalMonth').textContent=totalMonth.toFixed(2);
 }
 
-// ************** فلترة التواريخ **************
 function applyFilter(){
     const start=document.getElementById('startDate').value;
     const end=document.getElementById('endDate').value;
-    if(!start||!end){ alert('حدد الفترة'); return; }
+    if(!start||!end){alert('حدد الفترة');return;}
     const startDate=start<=end?start:end;
     const endDate=start<=end?end:start;
-
     let sales=JSON.parse(localStorage.getItem('salesData')||'[]');
-    sales = sales.filter(s => employeeName ? normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName) : true);
-    const filteredSales = sales.filter(s=>{
-        const date=s.date||(s.datetime?s.datetime.split('T')[0]:'');
-        return date>=startDate && date<=endDate;
-    });
+    sales=sales.filter(s=>employeeName?normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName):true);
+    const filteredSales=sales.filter(s=>{const dt=extractDateTime(s);return dt.date>=startDate&&dt.date<=endDate;});
     loadSalesTable(filteredSales);
-
     let salfs=JSON.parse(localStorage.getItem('salfData')||'[]');
-    salfs = salfs.filter(s => employeeName ? normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName) : true);
-    const filteredSalfs=salfs.filter(s=>{
-        const date=s.date||(s.datetime?s.datetime.split('T')[0]:'');
-        return date>=startDate && date<=endDate;
-    });
+    salfs=salfs.filter(s=>employeeName?normalizeName(getEmployeeFromRecord(s))===normalizeName(employeeName):true);
+    const filteredSalfs=salfs.filter(s=>{const dt=extractDateTime(s);return dt.date>=startDate&&dt.date<=endDate;});
     loadSalfTable(filteredSalfs);
 }
 
@@ -375,55 +361,32 @@ function resetFilter(){
     loadSalfTable();
 }
 
-// ************** تسجيل سلفة **************
 function addSalf(){
     const val=document.getElementById('salfAmount').value;
     const amt=toNumber(val);
-    if(amt<=0){ alert('ادخل مبلغ السلفة صحيح'); return; }
-
+    if(amt<=0){alert('ادخل مبلغ السلفة صحيح');return;}
     const rawName=employeeNameRaw||'غير معروف';
     const now=new Date();
-    const entry={
-        employee: rawName,
-        amount: amt,
-        date: now.toISOString().split('T')[0],
-        time: formatTime12(now),
-        sentByEmployee:true
-    };
-
+    const entry={employee:rawName,amount:amt,date:now.toISOString().split('T')[0],time:formatTime12(now),sentByEmployee:true};
     let salfs=JSON.parse(localStorage.getItem('salfData')||'[]');
     salfs.push(entry);
-    localStorage.setItem('salfData', JSON.stringify(salfs));
-
+    localStorage.setItem('salfData',JSON.stringify(salfs));
     let withdrawals=JSON.parse(localStorage.getItem('withdrawals')||'[]');
     withdrawals.push(entry);
-    localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
-
+    localStorage.setItem('withdrawals',JSON.stringify(withdrawals));
     document.getElementById('salfAmount').value='';
     loadSalfTable();
     alert('تم تسجيل السلفة وإرسالها للمدير');
 }
 
-// ************** عند تحميل الصفحة **************
-window.onload=()=>{
-    loadCards();
-    loadSalesTable();
-    loadSalfTable();
-};
-
-// ************** تحديث تلقائي عند تغيير البيانات في localStorage **************
+window.onload=()=>{loadCards();loadSalesTable();loadSalfTable();};
 window.addEventListener('storage', e=>{
-    if(['withdrawals','salfData','salesData'].includes(e.key) || e.key==='loggedEmployee' || e.key==='username' || e.key==='loggedUser'){
-        employeeNameRaw = getEmployeeFromURL() || getEmployeeFromStorage();
-        employeeName = employeeNameRaw ? employeeNameRaw.trim() : null;
-        loadCards();
-        loadSalesTable();
-        loadSalfTable();
+    if(['withdrawals','salfData','salesData'].includes(e.key)||e.key==='loggedEmployee'||e.key==='username'||e.key==='loggedUser'){
+        employeeNameRaw=getEmployeeFromURL()||getEmployeeFromStorage();
+        employeeName=employeeNameRaw?employeeNameRaw.trim():null;
+        loadCards();loadSalesTable();loadSalfTable();
     }
 });
-
-// ************** دالة مساعدة **************
-function normalizeName(name){ return name? name.toString().trim().toLowerCase() : ''; }
 </script>
 </body>
 </html>

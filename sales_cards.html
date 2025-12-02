@@ -5,15 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>بطاقات الشغل - صالون لمسة إبداعية</title>
 <style>
-body { font-family:'Cairo',sans-serif; background: linear-gradient(180deg,#000,#111); color:#fff; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; margin:0; padding:40px 0; }
+body { 
+    font-family:'Cairo',sans-serif; 
+    background: linear-gradient(180deg,#000,#111); 
+    color:#fff; 
+    display:flex; 
+    justify-content:center; 
+    align-items:flex-start; 
+    min-height:100vh; 
+    margin:0; 
+    padding:40px 0; 
+    direction: rtl; 
+}
 header { text-align:center; margin-bottom:30px; }
 header .logo-container { display:inline-block; border:4px solid gold; border-radius:50%; padding:5px; box-shadow:0 0 20px gold; margin-bottom:10px; }
 header .logo-container img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
 header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
-.filter-row { display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap:wrap; }
+
+.filter-row { 
+    display:flex; 
+    flex-wrap:wrap; 
+    gap:10px; 
+    justify-content:flex-end; 
+    align-items:center; 
+    margin-bottom:15px; 
+    flex-direction: row-reverse; /* عكس ترتيب الفلتر */
+}
 .filter-row input { padding:8px; border-radius:6px; border:none; background:#222; color:#fff; }
 .filter-row button { padding:8px 12px; border-radius:6px; border:none; background:gold; color:#111; font-weight:bold; cursor:pointer; transition:0.3s; }
 .filter-row button:hover { transform:translateY(-2px); box-shadow:0 0 20px gold; }
+.back-btn { margin-left:10px; }
+
 .cards-container { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
 .row { display:flex; flex-wrap:nowrap; gap:15px; justify-content:center; margin-bottom:15px; }
 .card { padding:15px; border-radius:15px; width:250px; text-align:center; transition:0.3s; color:#fff; }
@@ -24,9 +46,12 @@ header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
 .monthly-card { background:#5a1a3a; box-shadow:0 0 25px rgba(255,0,123,0.7); }
 .emp-card { background:#222; box-shadow:0 0 25px rgba(255,215,0,0.5); }
 .divider { width:100%; height:2px; background:gold; margin:20px 0; border-radius:2px; }
-.back-btn { margin-top:20px; padding:10px 15px; background:gold; color:#111; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s; }
-.back-btn:hover { transform:translateY(-2px); box-shadow:0 0 20px gold; }
-@media(max-width:480px){ .card { width:90%; } .filter-row input, .filter-row button { font-size:0.8rem; padding:6px; } .row { flex-direction:column; } }
+
+@media(max-width:480px){ 
+    .card { width:90%; } 
+    .filter-row input, .filter-row button { font-size:0.8rem; padding:6px; } 
+    .row { flex-direction:column; } 
+}
 </style>
 </head>
 <body>
@@ -36,17 +61,17 @@ header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
     <h1>بطاقات الشغل لكل الموظفين</h1>
 </header>
 
+<!-- فلتر وزر العودة معكوس -->
 <div class="filter-row">
-    <label for="startDate">من:</label>
-    <input type="date" id="startDate">
-    <label for="endDate">إلى:</label>
-    <input type="date" id="endDate">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">رجوع للوحة التحكم</button>
     <button onclick="applyFilter()">تطبيق الفلتر</button>
+    <input type="date" id="endDate">
+    <label for="endDate">إلى:</label>
+    <input type="date" id="startDate">
+    <label for="startDate">من:</label>
 </div>
 
 <div class="cards-container" id="cardsContainer"></div>
-
-<button class="back-btn" onclick="window.location.href='dashboard.html'">رجوع للوحة التحكم</button>
 </div>
 
 <script>
@@ -76,26 +101,26 @@ function generateCards(filteredData=null){
     const today = new Date().toISOString().split('T')[0];
     const month = today.slice(0,7);
 
-    // بطاقات يومية للمحل
+    // بطاقات يومية (شبكة | كاش | توتل)
     const dailySales = sales.filter(s=>s.date===today);
     const dailyTotal = dailySales.reduce((a,b)=>a+parseFloat(b.amount),0);
     const dailyCash = dailySales.filter(s=>s.method==='cash').reduce((a,b)=>a+parseFloat(b.amount),0);
     const dailyCard = dailySales.filter(s=>s.method==='card').reduce((a,b)=>a+parseFloat(b.amount),0);
     container.appendChild(createRow([
-        createCard('توتل اليومي للمحل', dailyTotal,'daily'),
+        createCard('شبكة اليومي للمحل', dailyCard,'daily'),
         createCard('كاش اليومي للمحل', dailyCash,'daily'),
-        createCard('شبكة اليومي للمحل', dailyCard,'daily')
+        createCard('توتل اليومي للمحل', dailyTotal,'daily')
     ]));
 
-    // بطاقات شهرية للمحل
+    // بطاقات شهرية (شبكة | كاش | توتل)
     const monthlySales = sales.filter(s=>s.date.startsWith(month));
     const monthlyTotal = monthlySales.reduce((a,b)=>a+parseFloat(b.amount),0);
     const monthlyCash = monthlySales.filter(s=>s.method==='cash').reduce((a,b)=>a+parseFloat(b.amount),0);
     const monthlyCard = monthlySales.filter(s=>s.method==='card').reduce((a,b)=>a+parseFloat(b.amount),0);
     container.appendChild(createRow([
-        createCard('توتل الشهري للمحل', monthlyTotal,'monthly'),
+        createCard('شبكة الشهري للمحل', monthlyCard,'monthly'),
         createCard('كاش الشهري للمحل', monthlyCash,'monthly'),
-        createCard('شبكة الشهري للمحل', monthlyCard,'monthly')
+        createCard('توتل الشهري للمحل', monthlyTotal,'monthly')
     ]));
 
     // فاصل
@@ -105,19 +130,14 @@ function generateCards(filteredData=null){
 
     // بطاقات الموظفين
     employees.forEach(emp=>{
-        // اجمع جميع المبيعات الخاصة بالموظف باستخدام الاسم أو اسم المستخدم
         const empSales = sales.filter(s => {
             const empName = s.employee.trim().toLowerCase();
             return empName === emp.name.trim().toLowerCase() || empName === emp.username.trim().toLowerCase();
         });
-
-        const empDailyTotal = empSales.filter(s=>s.date===today)
-            .reduce((sum,s)=>sum+parseFloat(s.amount),0);
-
-        const empMonthlyTotal = empSales.filter(s=>s.date.startsWith(month))
-            .reduce((sum,s)=>sum+parseFloat(s.amount),0);
-
-        const empCard = createCard(`${emp.name}`, `اليومي: ${empDailyTotal} | الشهري: ${empMonthlyTotal}`, 'emp');
+        empSales.sort((a,b)=> new Date(a.date) - new Date(b.date));
+        const empDailyTotal = empSales.filter(s=>s.date===today).reduce((sum,s)=>sum+parseFloat(s.amount),0);
+        const empMonthlyTotal = empSales.reduce((sum,s)=>sum+parseFloat(s.amount),0);
+        const empCard = createCard(`${emp.name}`, `اليومي: ${empDailyTotal} | الكلي: ${empMonthlyTotal}`, 'emp');
         container.appendChild(createRow([empCard]));
     });
 }
@@ -128,6 +148,7 @@ function applyFilter(){
     if(!start || !end){ alert('حدد الفترة'); return; }
     const sales = JSON.parse(localStorage.getItem('salesData')||'[]');
     const filtered = sales.filter(s=>s.date>=start && s.date<=end);
+    filtered.sort((a,b)=> new Date(a.date) - new Date(b.date));
     generateCards(filtered);
 }
 
