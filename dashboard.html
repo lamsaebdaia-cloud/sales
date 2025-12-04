@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة تحكم المدير - صالون لمسة إبداعية</title>
-<!-- ربط مكتبة Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
 body { font-family:'Cairo',sans-serif; background: linear-gradient(180deg,#000,#111); color:#fff; margin:0; padding:40px; display:flex; flex-direction:column; align-items:center; }
@@ -17,13 +17,15 @@ header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
 .dashboard-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:25px; background:#222; color:#fff; border:none; border-radius:20px; cursor:pointer; transition:0.3s; width:160px; height:160px; text-align:center; font-size:1.1rem; }
 .dashboard-btn i { font-size:3rem; color:gold; }
 .dashboard-btn:hover { background:#333; box-shadow:0 0 25px gold; transform:translateY(-3px); }
+
 .back-btn { padding:12px 20px; background:gold; color:#111; font-weight:bold; border:none; border-radius:10px; cursor:pointer; transition:0.3s; margin-top:20px; font-size:1rem; }
 .back-btn:hover { transform:translateY(-2px); box-shadow:0 0 20px gold; }
-@media(max-width:480px){ 
-    .dashboard-btn { width:120px; height:120px; padding:15px; font-size:0.95rem; } 
-    .dashboard-btn i { font-size:2rem; } 
-}
-</style>
+
+@media(max-width:480px){
+.dashboard-btn { width:120px; height:120px; padding:15px; font-size:0.95rem; }
+.dashboard-btn i { font-size:2rem; }
+} </style>
+
 </head>
 <body>
 <header>
@@ -60,8 +62,39 @@ header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
         <i class="fas fa-key"></i>
         <span>تغيير كلمة المرور</span>
     </button>
+    <!-- زر تصفير البرنامج على شكل أيقونة كبير -->
+    <button class="dashboard-btn" id="resetButton">
+        <i class="fas fa-broom"></i>
+        <span>تصفير البرنامج</span>
+    </button>
 </div>
 
 <button class="back-btn" onclick="window.location.href='index.html'">تسجيل الخروج</button>
+
+<script>
+// تعيين الباسورد الافتراضي إذا لم يكن موجود
+if (!localStorage.getItem("adminPassword")) {
+    localStorage.setItem("adminPassword", "1234"); // الباسورد الافتراضي
+}
+
+// زر التصفير
+document.getElementById("resetButton").addEventListener("click", function () {
+    if (confirm("تحذير: هذا الإجراء سيقوم بمسح جميع بيانات البرنامج! هل تريد المتابعة؟")) {
+        let pass = prompt("ادخل كلمة المرور لإتمام التصفير:");
+        let correctPass = localStorage.getItem("adminPassword");
+
+        if (pass === correctPass) {
+            localStorage.clear();
+            alert("تم تصفير البرنامج بالكامل بنجاح.");
+            location.reload();
+        } else {
+            alert("كلمة المرور غير صحيحة!");
+        }
+    } else {
+        alert("تم إلغاء عملية التصفير.");
+    }
+});
+</script>
+
 </body>
 </html>
