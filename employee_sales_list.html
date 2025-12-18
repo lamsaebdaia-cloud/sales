@@ -12,7 +12,6 @@
     --card-text:#fff;
     --panel-bg:#111;
 }
-
 body {
     font-family:'Cairo',sans-serif;
     background: linear-gradient(180deg,#000,#111);
@@ -20,188 +19,35 @@ body {
     margin:0;
     padding:20px;
 }
-
-/* الرأس والشعار */
-header {
-    text-align:center;
-    margin-bottom:20px;
-}
-header .logo-container {
-    display:inline-block;
-    border:4px solid var(--gold);
-    border-radius:50%;
-    padding:5px;
-    box-shadow:0 0 20px var(--gold);
-    margin-bottom:10px;
-}
-header .logo-container img {
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    object-fit:cover;
-}
-header h1 {
-    font-size:1.8rem;
-    color:var(--gold);
-    margin:0;
-    text-shadow:0 0 10px var(--gold);
-}
-
-/* البطاقات اليومية والشهرية */
-.cards-row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    justify-content:center;
-    margin-bottom:15px;
-}
+header { text-align:center; margin-bottom:20px; }
+header .logo-container { display:inline-block; border:4px solid var(--gold); border-radius:50%; padding:5px; box-shadow:0 0 20px var(--gold); margin-bottom:10px; }
+header .logo-container img { width:80px; height:80px; border-radius:50%; object-fit:cover; }
+header h1 { font-size:1.8rem; color:var(--gold); margin:0; text-shadow:0 0 10px var(--gold); }
+.cards-row{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom:15px; }
 .cards-row.daily { flex-direction: row-reverse; }
 .cards-row.monthly { flex-direction: row-reverse; }
-
-.card{
-    background:var(--daily-bg);
-    padding:15px 10px;
-    border-radius:10px;
-    box-shadow:0 0 12px rgba(255,215,0,0.5);
-    text-align:center;
-    min-width:100px;
-    flex:1 1 120px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    color:var(--card-text);
-}
+.card{ background:var(--daily-bg); padding:15px 10px; border-radius:10px; box-shadow:0 0 12px rgba(255,215,0,0.5); text-align:center; min-width:100px; flex:1 1 120px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:var(--card-text); }
 .cards-row.monthly .card{ background:var(--monthly-bg); }
 .card h3{margin:0 0 5px;font-size:1rem;text-shadow:0 0 5px var(--gold);}
 .card p{margin:0;font-size:1rem;}
-
-/* فلتر + زر الرجوع */
-.filter-row {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap:10px;
-    justify-items:center;
-    align-items:center;
-    margin-bottom:15px;
-}
-.filter-row input {
-    padding:6px 8px;
-    border-radius:6px;
-    border:none;
-    background:var(--panel-bg);
-    color:#fff;
-    text-align:right;
-    width:100%;
-}
-.filter-buttons {
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    justify-content:center;
-    align-items:center;
-}
-.gold-btn {
-    padding:6px 12px;
-    border-radius:6px;
-    border:none;
-    background:var(--gold);
-    color:#111;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
-.gold-btn:hover {
-    transform:translateY(-2px);
-    box-shadow:0 0 15px var(--gold);
-}
-
-/* زر العودة */
-.back-btn {
-    padding:8px 12px;
-    background:var(--gold);
-    color:#111;
-    font-weight:bold;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-}
-.back-btn:hover {
-    transform:translateY(-2px);
-    box-shadow:0 0 20px var(--gold);
-}
-
-/* السلف */
-.salf-section {
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:15px;
-}
-.salf-section input {
-    padding:8px;
-    border-radius:6px;
-    border:none;
-    background:#222;
-    color:#fff;
-    text-align:right;
-    min-width:120px;
-    flex:1 1 140px;
-}
-.salf-section button {
-    padding:8px 12px;
-    border-radius:6px;
-    border:none;
-    background:var(--gold);
-    color:#111;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-/* الجداول */
-.table-section {
-    width:100%;
-}
-.table-wrap {
-    width:100%;
-    overflow-x:hidden;
-    margin-bottom:20px;
-}
-table {
-    width:100%;
-    border-collapse:collapse;
-    table-layout: fixed;
-    background:#222;
-    border-radius:8px;
-    overflow:hidden;
-}
-table th, table td {
-    padding:8px;
-    text-align:center;
-    border-bottom:1px solid #444;
-    word-wrap: break-word;
-}
+.filter-row { display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap:10px; justify-items:center; align-items:center; margin-bottom:15px; }
+.filter-row input { padding:6px 8px; border-radius:6px; border:none; background:var(--panel-bg); color:#fff; text-align:right; width:100%; }
+.filter-buttons { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:center; }
+.gold-btn { padding:6px 12px; border-radius:6px; border:none; background:var(--gold); color:#111; font-weight:bold; cursor:pointer; transition:0.3s; }
+.gold-btn:hover { transform:translateY(-2px); box-shadow:0 0 15px var(--gold); }
+.back-btn { padding:8px 12px; background:var(--gold); color:#111; font-weight:bold; border:none; border-radius:8px; cursor:pointer; transition:0.3s; }
+.back-btn:hover { transform:translateY(-2px); box-shadow:0 0 20px var(--gold); }
+.salf-section { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-bottom:15px; }
+.salf-section input { padding:8px; border-radius:6px; border:none; background:#222; color:#fff; text-align:right; min-width:120px; flex:1 1 140px; }
+.salf-section button { padding:8px 12px; border-radius:6px; border:none; background:var(--gold); color:#111; font-weight:bold; cursor:pointer; }
+.table-section { width:100%; }
+.table-wrap { width:100%; overflow-x:hidden; margin-bottom:20px; }
+table { width:100%; border-collapse:collapse; table-layout: fixed; background:#222; border-radius:8px; overflow:hidden; }
+table th, table td { padding:8px; text-align:center; border-bottom:1px solid #444; word-wrap: break-word; }
 table th { background:#333; color:var(--gold); }
-
-/* رسائل التحذير */
-.warning {
-    color:#ffcc00;
-    margin-top:8px;
-    font-size:0.95rem;
-}
-
-/* Responsive */
-@media(max-width:768px){
-    .card{ flex:1 1 100px; min-width:90px; }
-    .filter-row input, .filter-row button, .salf-section input, .salf-section button{ font-size:0.85rem; padding:5px; }
-    table th, table td{ font-size:0.8rem; padding:4px; }
-}
-@media(max-width:480px){
-    .card{ min-width:80px; min-height:90px; font-size:0.8rem; }
-    .salf-section input, .salf-section button{ flex:1 1 45%; }
-}
+.warning { color:#ffcc00; margin-top:8px; font-size:0.95rem; }
+@media(max-width:768px){ .card{ flex:1 1 100px; min-width:90px; } .filter-row input, .filter-row button, .salf-section input, .salf-section button{ font-size:0.85rem; padding:5px; } table th, table td{ font-size:0.8rem; padding:4px; } }
+@media(max-width:480px){ .card{ min-width:80px; min-height:90px; font-size:0.8rem; } .salf-section input, .salf-section button{ flex:1 1 45%; } }
 </style>
 </head>
 <body>
@@ -213,7 +59,6 @@ table th { background:#333; color:var(--gold); }
         <p id="warnTxt" class="warning" style="display:none;"></p>
     </header>
 
-    <!-- البطاقات اليومية -->
     <h2 style="text-align:center;">إجمالي المبيعات اليومية</h2>
     <div class="cards-row daily">
         <div class="card"><h3>كاش اليومي</h3><p id="cashToday">0</p></div>
@@ -221,7 +66,6 @@ table th { background:#333; color:var(--gold); }
         <div class="card"><h3>توتل اليومي</h3><p id="totalToday">0</p></div>
     </div>
 
-    <!-- البطاقات الشهرية -->
     <h2 style="text-align:center;">إجمالي المبيعات الشهرية</h2>
     <div class="cards-row monthly">
         <div class="card"><h3>كاش الشهري</h3><p id="cashMonth">0</p></div>
@@ -229,7 +73,6 @@ table th { background:#333; color:var(--gold); }
         <div class="card"><h3>توتل الشهري</h3><p id="totalMonth">0</p></div>
     </div>
 
-    <!-- فلتر + زر العودة -->
     <div class="filter-row">
         <input type="date" id="startDate" placeholder="من">
         <input type="date" id="endDate" placeholder="إلى">
@@ -240,13 +83,11 @@ table th { background:#333; color:var(--gold); }
         </div>
     </div>
 
-    <!-- السلف -->
     <div class="salf-section">
         <input type="number" id="salfAmount" placeholder="المبلغ">
         <button onclick="addSalf()">تسجيل السلفة</button>
     </div>
 
-    <!-- الجداول -->
     <div class="table-section">
         <h2 style="text-align:center;">جدول المبيعات</h2>
         <table>
@@ -278,7 +119,6 @@ table th { background:#333; color:var(--gold); }
 </div>
 
 <script>
-// تحميل البيانات والبطاقات والجداول
 function getEmployeeFromURL(){const params=new URLSearchParams(window.location.search);return params.get('user');}
 function getEmployeeFromStorage(){const keys=['loggedEmployee','loggedUser','username','user','logged_employee','currentUser'];for(const k of keys){const v=localStorage.getItem(k);if(v&&v.trim()!=='') return v.trim();}return null;}
 let employeeNameRaw = getEmployeeFromURL() || getEmployeeFromStorage();
@@ -367,13 +207,17 @@ function addSalf(){
     if(amt<=0){alert('ادخل مبلغ السلفة صحيح');return;}
     const rawName=employeeNameRaw||'غير معروف';
     const now=new Date();
-    const entry={employee:rawName,amount:amt,date:now.toISOString().split('T')[0],time:formatTime12(now),sentByEmployee:true};
+    const id = '_' + Math.random().toString(36).substr(2, 9);
+    const entry={id, employee:rawName, amount:amt, date:now.toISOString().split('T')[0], time:formatTime12(now), sentByEmployee:true};
+    
     let salfs=JSON.parse(localStorage.getItem('salfData')||'[]');
     salfs.push(entry);
     localStorage.setItem('salfData',JSON.stringify(salfs));
+
     let withdrawals=JSON.parse(localStorage.getItem('withdrawals')||'[]');
     withdrawals.push(entry);
     localStorage.setItem('withdrawals',JSON.stringify(withdrawals));
+
     document.getElementById('salfAmount').value='';
     loadSalfTable();
     alert('تم تسجيل السلفة وإرسالها للمدير');

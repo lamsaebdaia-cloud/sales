@@ -1,325 +1,244 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>السحوبات - صالون لمسة إبداعية</title>
+<title>السلف - صالون لمسة إبداعية</title>
 <style>
-body { font-family: 'Cairo', sans-serif; background: #f5f6fa; margin: 0; padding: 20px; }
-.container { max-width: 1000px; margin: auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-h1 { text-align: center; color: #2f3640; margin-bottom: 20px; }
-.form-row, .filter-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 15px; }
-input, select, button { padding: 10px; border-radius: 8px; border: 1px solid #dcdde1; font-size: 16px; }
-select { min-width: 150px; }
-input[type="number"], input[type="date"] { width: 150px; }
-button { cursor: pointer; border: none; transition: 0.3s; }
-.btn-add-employee { background-color: #00a8ff; color: white; font-weight: bold; width: 40px; height: 40px; font-size: 20px; }
-.btn-add-employee:hover { background-color: #0097e6; }
-.btn-add-withdrawal { background-color: #44bd32; color: white; font-weight: bold; padding: 10px 15px; }
-.btn-add-withdrawal:hover { background-color: #4cd137; }
-.total-card { background-color: #ff6b81; color: white; border-radius: 12px; padding: 20px; text-align: center; font-size: 20px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-.total-card span { display: block; font-size: 32px; margin-top: 5px; }
-.employee-cards { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
-.employee-card { background-color: #4cd137; color: white; border-radius: 12px; padding: 15px; flex: 1 1 150px; text-align: center; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: relative; }
-.employee-card span { display: block; font-size: 24px; margin-top: 10px; }
-.employee-card .delete-btn { position: absolute; top: 5px; right: 5px; background: #e84118; border: none; border-radius: 50%; width: 25px; height: 25px; color: white; font-weight: bold; cursor: pointer; line-height: 22px; }
-.employee-card .delete-btn:hover { background: #c23616; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-th, td { text-align: center; padding: 12px; border-bottom: 1px solid #dcdde1; }
-th { background-color: #f1f2f6; color: #2f3640; }
-tr:nth-child(even) { background-color: #f9f9f9; }
-.btn-delete { background-color: #e84118; color: white; border-radius: 6px; padding: 6px 12px; }
-.btn-delete:hover { background-color: #c23616; }
-.btn-back { margin-bottom: 20px; background-color: #353b48; color: white; padding: 10px 20px; border-radius: 8px; display: inline-block; }
-.btn-back:hover { background-color: #2f3640; }
-.employee-sent { background-color: #fff3cd; }
-.employee-sent td { color: #e84118; font-weight: bold; }
-.employee-manual { background-color: #d4edda; }
-.employee-manual td { color: #155724; font-weight: bold; }
-.debug { font-size:12px; color:#666; margin-top:8px; }
+body{font-family:'Cairo',sans-serif;background:#f5f6fa;margin:0;padding:20px}
+.container{max-width:1100px;margin:auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+h1{text-align:center;margin-bottom:20px}
+
+.form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+input,select,button{padding:10px;border-radius:8px;border:1px solid #ccc}
+button{cursor:pointer}
+
+.employee-cards{display:flex;flex-wrap:wrap;gap:15px;margin-bottom:20px}
+.employee-card{
+background:#4cd137;color:#fff;border-radius:12px;
+padding:15px;flex:1 1 180px;text-align:center;
+position:relative
+}
+.employee-card span{display:block;font-size:22px;margin-top:8px}
+
+.delete-btn,.remove-emp{
+position:absolute;top:6px;border:none;color:#fff;
+border-radius:50%;width:26px;height:26px;
+font-weight:bold;cursor:pointer
+}
+.delete-btn{right:6px;background:#e84118}
+.remove-emp{left:6px;background:#2f3640}
+
+table{width:100%;border-collapse:collapse}
+th,td{text-align:center;padding:10px;border-bottom:1px solid #ddd}
+th{background:#f1f2f6}
+
+.btn-delete{background:#e84118;color:#fff;border:none;padding:6px 12px;border-radius:6px}
+
+.total-card{
+background:#ff6b81;color:#fff;border-radius:12px;
+padding:20px;text-align:center;font-size:20px;margin-bottom:20px
+}
+.total-card span{font-size:32px;display:block}
+
+.employee-sent{background:#fff3cd}
+.employee-manual{background:#d4edda}
 </style>
 </head>
+
 <body>
-
 <div class="container">
-<button class="btn-back" onclick="goBack()">العودة لصفحة التحكم</button>
 
-<h1>سحوبات الموظفين</h1>
+<h1>سلف الموظفين</h1>
 
+<!-- إضافة سلفة -->
 <div class="form-row">
-    <select id="employeeName">
-        <option value="">اختر الموظف</option>
-    </select>
-    <button class="btn-add-employee" onclick="addEmployee()">+</button>
-    <input type="number" id="withdrawAmount" placeholder="المبلغ">
-    <input type="date" id="withdrawDate">
-    <button class="btn-add-withdrawal" onclick="addWithdrawal()">إضافة سحب</button>
+<select id="employeeName"></select>
+<button onclick="addEmployee()">+</button>
+<input type="number" id="withdrawAmount" placeholder="المبلغ">
+<input type="date" id="withdrawDate">
+<button onclick="addWithdrawal()">إضافة سلفة</button>
+<button onclick="goBack()">رجوع للقائمة</button>
 </div>
 
-<div class="filter-row" style="flex-direction: row-reverse;">
-    <label>من</label>
-    <input type="date" id="filterTo">
-    <label>إلى</label>
-    <input type="date" id="filterFrom">
-    <button onclick="applyFilter()">عرض</button>
-    <button onclick="clearFilter()">مسح الفلتر</button>
-</div>
-
-<button onclick="acceptAllEmployeeLoans()" style="background-color:#ff9f1a; color:white; padding:10px 15px; border-radius:8px; font-weight:bold; margin-bottom:10px; cursor:pointer;">
-استلام جميع السلف المرسلة من الموظفين
-</button>
-
+<!-- إجمالي -->
 <div class="total-card">
-    إجمالي السحوبات
-    <span id="totalWithdrawals">0</span> ريال
+إجمالي السلف
+<span id="totalWithdrawals">0</span> ريال
 </div>
 
+<!-- بطاقات الموظفين -->
 <div class="employee-cards" id="employeeCards"></div>
 
-<table id="withdrawalsTable">
-    <thead>
-        <tr>
-            <th>الموظف</th>
-            <th>المبلغ</th>
-            <th>التاريخ</th>
-            <th>الوقت</th>
-            <th>حذف</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
+<!-- جدول السلف -->
+<table>
+<thead>
+<tr>
+<th>الموظف</th>
+<th>المبلغ</th>
+<th>التاريخ</th>
+<th>المصدر</th>
+<th>حذف</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
 </table>
 
-<div class="debug" id="debugLog">Console debug: افتح DevTools > Console لرؤية التفاصيل.</div>
 </div>
 
 <script>
-/* -------------------- بيانات ابتدائية -------------------- */
+/* البيانات */
 let employees = JSON.parse(localStorage.getItem('employees')) || ["أحمد","ياسر","محمد"];
-let withdrawals = JSON.parse(localStorage.getItem('withdrawals')) || [];
-let filteredWithdrawals = null;
+let withdrawals = JSON.parse(localStorage.getItem('salfData')) || [];
 
-/* حافظ على المفاتيح إن لم تكن موجودة */
 localStorage.setItem('employees', JSON.stringify(employees));
-localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
+localStorage.setItem('salfData', JSON.stringify(withdrawals));
 
-function generateID() { return '_' + Math.random().toString(36).substr(2, 9); }
-
-function formatTime12(date){
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? '0'+minutes : minutes;
-    return hours + ':' + minutes + ' ' + ampm;
+function generateID(){
+    return '_' + Math.random().toString(36).substr(2,9);
 }
 
-/* -------------------- واجهة الموظفين -------------------- */
-function populateEmployees() {
-    const select = document.getElementById('employeeName');
-    select.innerHTML = '<option value="">اختر الموظف</option>';
-    employees.forEach(emp => {
-        let option = document.createElement('option');
-        option.value = emp;
-        option.textContent = emp;
-        select.appendChild(option);
+/* تحميل الموظفين */
+function populateEmployees(){
+    const s=document.getElementById('employeeName');
+    s.innerHTML='<option value="">اختر الموظف</option>';
+    employees.forEach(e=>{
+        let o=document.createElement('option');
+        o.value=e;o.textContent=e;
+        s.appendChild(o);
     });
 }
 
-function addEmployee() {
-    let newEmployee = prompt('أدخل اسم الموظف الجديد:');
-    if(newEmployee && !employees.includes(newEmployee)) {
-        employees.push(newEmployee);
-        localStorage.setItem('employees', JSON.stringify(employees));
+/* إضافة موظف */
+function addEmployee(){
+    let n=prompt('اسم الموظف');
+    if(n && !employees.includes(n)){
+        employees.push(n);
+        localStorage.setItem('employees',JSON.stringify(employees));
         populateEmployees();
-        displayEmployeeCards();
+        draw();
     }
 }
 
-function addWithdrawal() {
-    const employee = document.getElementById('employeeName').value;
-    const amount = document.getElementById('withdrawAmount').value;
-    const date = document.getElementById('withdrawDate').value;
-    if(employee === '' || amount === '' || date === '') { alert('أكمل جميع الحقول'); return; }
-    const now = new Date();
-    const timeNow = formatTime12(now);
-    const newWithdrawal = {id: generateID(), employee, amount: parseFloat(amount), date, sentByEmployee: false, receivedTime: timeNow};
-    withdrawals.push(newWithdrawal);
-    localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
-    document.getElementById('employeeName').value = '';
-    document.getElementById('withdrawAmount').value = '';
-    document.getElementById('withdrawDate').value = '';
-    applyFilter();
+/* إضافة سلفة (يدوية) */
+function addWithdrawal(){
+    let emp=employeeName.value;
+    let amt=+withdrawAmount.value;
+    let date=withdrawDate.value;
+    if(!emp||!amt||!date)return alert('اكمل البيانات');
+
+    withdrawals.push({
+        id:generateID(),
+        employee:emp,
+        amount:amt,
+        date:date,
+        sentByEmployee:false
+    });
+
+    localStorage.setItem('salfData',JSON.stringify(withdrawals));
+    withdrawAmount.value='';withdrawDate.value='';
+    draw();
 }
 
-/* -------------------- عرض السحوبات وبطاقات الموظف -------------------- */
-function displayWithdrawals() {
-    const tbody = document.querySelector('#withdrawalsTable tbody');
-    tbody.innerHTML = '';
-    let list = filteredWithdrawals || withdrawals;
-    let total = 0;
+/* رسم الجدول */
+function drawTable(){
+    const tb=document.getElementById('tbody');
+    tb.innerHTML='';
+    let total=0;
 
-    list.forEach((w)=>{
-        total += parseFloat(w.amount || 0);
-        let rowClass = w.sentByEmployee ? "employee-sent" : "employee-manual";
-        let displayTime = w.sentByEmployee ? (w.sentTime || "-") : w.receivedTime;
-        let badge = w.sentByEmployee ? `<div style="font-size:14px;">أُرسلت من قبل الموظف</div>` : '';
-
-        let row = document.createElement('tr');
-        row.className = rowClass;
-        row.innerHTML = `
-            <td>${w.employee || ''}${badge}</td>
+    withdrawals.forEach(w=>{
+        total+=w.amount;
+        tb.innerHTML+=`
+        <tr class="${w.sentByEmployee?'employee-sent':'employee-manual'}">
+            <td>${w.employee}</td>
             <td>${w.amount}</td>
             <td>${w.date}</td>
-            <td>${displayTime}</td>
+            <td>${w.sentByEmployee?'موظف':'مدير'}</td>
             <td><button class="btn-delete" onclick="deleteWithdrawal('${w.id}')">حذف</button></td>
-        `;
-        tbody.appendChild(row);
+        </tr>`;
     });
 
-    document.getElementById('totalWithdrawals').textContent = total.toFixed(2);
-    displayEmployeeCards(list);
+    totalWithdrawals.textContent=total.toFixed(2);
 }
 
-function displayEmployeeCards(list=null) {
-    const container = document.getElementById('employeeCards');
-    container.innerHTML = '';
-    let displayList = list || withdrawals;
+/* رسم البطاقات (تجمع الكل) */
+function drawCards(){
+    const c=document.getElementById('employeeCards');
+    c.innerHTML='';
+
     employees.forEach(emp=>{
-        let total = displayList.filter(w=>w.employee===emp).reduce((sum,w)=>sum+parseFloat(w.amount||0),0);
-        let card = document.createElement('div');
-        card.className='employee-card';
-        card.innerHTML=`
-            <button class="delete-btn" onclick="deleteEmployee('${emp}')">×</button>
-            ${emp}<span>${total.toFixed(2)} ريال</span>
-        `;
-        container.appendChild(card);
+        let empList = withdrawals.filter(w=>w.employee===emp);
+        let sum = empList.reduce((a,b)=>a+b.amount,0);
+        let sentCount = empList.filter(w=>w.sentByEmployee).length;
+
+        c.innerHTML+=`
+        <div class="employee-card">
+            <button class="delete-btn" onclick="deleteEmployeeLoans('${emp}')">×</button>
+            <button class="remove-emp" onclick="removeEmployee('${emp}')">−</button>
+            ${emp}
+            <span>${sum.toFixed(2)} ريال</span>
+            ${sentCount?`<div style="font-size:13px">(${sentCount} مرسلة من الموظف)</div>`:''}
+        </div>`;
     });
 }
 
-/* -------------------- دالة حذف أقوى مع فحص جميع مفاتيح localStorage -------------------- */
+/* حذف سلفة واحدة */
 function deleteWithdrawal(id){
-    if(!id){ alert('لا يوجد ID للحذف'); return; }
-    if(!confirm("هل تريد حذف هذا السحب؟")) return;
+    if(!confirm('هل تريد حذف هذه السلفة؟')) return;
 
-    console.group("حذف سحب - diagnostics");
-    console.log("طلب حذف ID:", id);
+    // حذف من البيانات المحلية
+    withdrawals = withdrawals.filter(w => w.id !== id);
 
-    // 1) نبحث داخل المصفوفة الحالية 'withdrawals' ونحذف إن وُجد
-    let foundInMain = withdrawals.some(w => String(w.id) === String(id) || String(w.id) === String(id).replace(/^_/, ''));
-    if(foundInMain){
-        withdrawals = withdrawals.filter(w => !(String(w.id) === String(id) || String(w.id) === String(id).replace(/^_/, '')));
-        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
-        console.log("تم الحذف من key 'withdrawals'");
-    } else {
-        console.log("لم يوجد داخل key 'withdrawals'");
-    }
+    // تحديث localStorage
+    localStorage.setItem('salfData', JSON.stringify(withdrawals));
 
-    // 2) نبحث في كل مفاتيح localStorage عن أي مصفوفة تحتوي على كائن id مطابق ونقوم بتحديثها
-    let keysChecked = 0;
-    let keysModified = [];
-    for(let i=0;i<localStorage.length;i++){
-        let key = localStorage.key(i);
-        keysChecked++;
-        try {
-            let val = JSON.parse(localStorage.getItem(key));
-            if(Array.isArray(val) && val.length && typeof val[0] === 'object'){
-                // هل تحتوي المصفوفة على عنصر id مطابق؟
-                let has = val.some(it => String(it.id) === String(id) || String(it.id) === String(id).replace(/^_/, ''));
-                if(has){
-                    let newVal = val.filter(it => !(String(it.id) === String(id) || String(it.id) === String(id).replace(/^_/, '')));
-                    localStorage.setItem(key, JSON.stringify(newVal));
-                    keysModified.push(key);
-                    console.log("تم الحذف من key:", key);
-                }
-            }
-        } catch(e){
-            // not JSON or not parseable - تجاهل
-        }
-    }
+    // إعادة رسم الجدول والبطاقات
+    draw();
 
-    // 3) إعادة تحميل العرض
-    applyFilter();
-    console.log("مفاتيح فحصت:", keysChecked, "، مفاتيح تم تعديلها:", keysModified);
-    console.groupEnd();
-
-    // توضيح للمستخدم
-    if(foundInMain || keysModified.length){
-        alert("تم حذف السحب بنجاح");
-    } else {
-        alert("لم نعثر على هذا السحب في قواعد البيانات المحلية. افتح DevTools -> Console وارسل لي الناتج لمزيد من التحقق.");
-    }
+    // تفعيل storage event لأي صفحات أخرى
+    window.dispatchEvent(new Event('storage'));
 }
 
-/* زر حذف الموظف (مُعطّل كما طلبت سابقًا) */
-function deleteEmployee(empName) {
-    alert('زر حذف الموظف معطل.');
+/* حذف كل سلف موظف */
+function deleteEmployeeLoans(emp){
+    if(!confirm(`حذف كل سلف ${emp}؟`))return;
+    withdrawals = withdrawals.filter(w=>w.employee!==emp);
+    localStorage.setItem('salfData',JSON.stringify(withdrawals));
+    draw();
+    window.dispatchEvent(new Event('storage'));
 }
 
-/* -------------------- فلترة وتحديث -------------------- */
-function applyFilter(){
-    let from=document.getElementById('filterFrom').value;
-    let to=document.getElementById('filterTo').value;
-    if(from && to && from>to) [from,to]=[to,from];
-    filteredWithdrawals = withdrawals.filter(w=>{
-        if(from && to) return w.date>=from && w.date<=to;
-        else if(from) return w.date>=from;
-        else if(to) return w.date<=to;
-        else return true;
-    });
-    displayWithdrawals();
+/* حذف الموظف نهائيًا */
+function removeEmployee(emp){
+    if(!confirm(`حذف ${emp} نهائيًا؟`))return;
+    employees = employees.filter(e=>e!==emp);
+    withdrawals = withdrawals.filter(w=>w.employee!==emp);
+    localStorage.setItem('employees',JSON.stringify(employees));
+    localStorage.setItem('salfData',JSON.stringify(withdrawals));
+    populateEmployees();
+    draw();
+    window.dispatchEvent(new Event('storage'));
 }
 
-function clearFilter(){
-    document.getElementById('filterFrom').value='';
-    document.getElementById('filterTo').value='';
-    filteredWithdrawals = null;
-    displayWithdrawals();
+/* إعادة رسم */
+function draw(){
+    drawTable();
+    drawCards();
 }
 
-/* استلام كل السلف المرسلة من الموظفين */
-function acceptAllEmployeeLoans() {
-    if(confirm("هل أنت متأكد من استلام جميع السلف المرسلة من الموظفين؟")) {
-        const now = new Date();
-        const currentTime = formatTime12(now);
-        withdrawals.forEach(w=>{
-            if(w.sentByEmployee === true){
-                w.sentByEmployee = false;
-                w.receivedTime = currentTime;
-            }
-        });
-        localStorage.setItem('withdrawals', JSON.stringify(withdrawals));
-        applyFilter();
-        alert("تم استلام جميع السلف المرسلة من الموظفين");
-    }
-}
-
-function goBack(){ window.location.href='dashboard.html'; }
-
-/* -------------------- مراقبة تغيّر localStorage من صفحات أخرى -------------------- */
-window.addEventListener('storage',(e)=>{
-    console.log("storage event:", e.key, e.oldValue, e.newValue);
-    if(e.key === 'withdrawals'){
-        try { withdrawals = JSON.parse(e.newValue || '[]'); } catch(err){ withdrawals = []; }
-        applyFilter();
+/* تزامن مع صفحة الموظف */
+window.addEventListener('storage',e=>{
+    if(e.key==='salfData'){
+        withdrawals = JSON.parse(localStorage.getItem('salfData')||'[]');
+        draw();
     }
 });
 
-/* -------------------- تشغيل أولي + Debug info -------------------- */
-window.onload = ()=>{
-    populateEmployees();
-    // عرض بعض معلومات الـ debug في الـ console
-    console.group("Initial localStorage diagnostics");
-    console.log("localStorage keys:", Object.keys(localStorage));
-    try {
-        console.log("current 'withdrawals' (parsed):", JSON.parse(localStorage.getItem('withdrawals')||'[]'));
-    } catch(e){
-        console.warn("لا يمكن تحميل withdrawals من localStorage (غير صالحة JSON).");
-    }
-    console.groupEnd();
+populateEmployees();
+draw();
 
-    displayWithdrawals();
-};
+/* زر العودة */
+function goBack(){ window.location.href='dashboard.html'; }
 </script>
 </body>
 </html>
