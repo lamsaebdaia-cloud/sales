@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
@@ -24,8 +23,8 @@ header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
 @media(max-width:480px){
 .dashboard-btn { width:120px; height:120px; padding:15px; font-size:0.95rem; }
 .dashboard-btn i { font-size:2rem; }
-} </style>
-
+}
+</style>
 </head>
 <body>
 <header>
@@ -62,7 +61,15 @@ header h1 { font-size:2rem; color:gold; margin:0; text-shadow:0 0 10px gold; }
         <i class="fas fa-key"></i>
         <span>تغيير كلمة المرور</span>
     </button>
-    <!-- زر تصفير البرنامج على شكل أيقونة كبير -->
+    <button class="dashboard-btn" onclick="window.location.href='analysis.html'">
+        <i class="fas fa-chart-line"></i>
+        <span>تحليل الحسابات</span>
+    </button>
+    <!-- زر سحوبات المدير الجديد -->
+    <button class="dashboard-btn" onclick="window.location.href='manager_withdrawals.html'">
+        <i class="fas fa-hand-holding-usd"></i>
+        <span>سحوبات المدير</span>
+    </button>
     <button class="dashboard-btn" id="resetButton">
         <i class="fas fa-broom"></i>
         <span>تصفير البرنامج</span>

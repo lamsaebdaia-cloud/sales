@@ -39,7 +39,7 @@ header p{margin:5px 0 0;opacity:.9}
 .card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.08);transition:transform 0.3s, box-shadow 0.3s;text-align:center;}
 .card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 15px 30px rgba(0,0,0,0.2);}
 .card h3{margin:0;font-size:20px;color:#666;display:flex;justify-content:center;align-items:center;gap:10px;}
-.card h3 span.emoji{font-size:55px;color:var(--gold);}
+.card h3 span.emoji{font-size:45px;color:var(--gold);}
 .card .value{font-size:26px;font-weight:800;margin-top:8px;transition: opacity 0.5s; opacity:1;}
 .value.fade-out{opacity:0;}
 .cash{color:var(--cash)} .network{color:var(--network)} .withdraw{color:var(--withdraw)}
@@ -108,12 +108,6 @@ body.dark input, body.dark button{background:#2a2a2a;color:#fff;border:1px solid
 <footer>© صالون لمسة إبداعية</footer>
 
 <script>
-// حماية الصفحة: السماح فقط للمدير بالدخول
-if(!localStorage.getItem("loggedInAsAdmin") || localStorage.getItem("loggedInAsAdmin") !== "true") {
-    alert("يجب تسجيل الدخول كمدير للوصول لهذه الصفحة!");
-    window.location.href = "index.html";
-}
-
 let chart;
 const get=(k)=>JSON.parse(localStorage.getItem(k))||[];
 const filter=(arr)=>{const f=from.value,t=to.value;return arr.filter(d=>{if(!d.date) return true;if(f&&d.date<f) return false;if(t&&d.date>t) return false;return true;});}

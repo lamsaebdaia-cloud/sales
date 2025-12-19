@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>سحوبات المدير - صالون لمسة إبداعية</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+/* الألوان الأساسية */
+:root {
+  --bg-light: #f4f7fb;
+  --bg-dark: #121212;
+  --card-light: #fff;
+  --card-dark: #1e1e1e;
+  --text-light: #111;
+  --text-dark: #fff;
+  --primary: #3498db;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+}
+
+/* الصفحة */
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* صندوق الإدخال */
+.form-container {
+  max-width: 400px;
+  width: 100%;
+  background: var(--card-light);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* الإدخال */
+#amount {
+  width: 80%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  text-align: center; /* لضبط الرقم في منتصف الخانة */
+  margin-bottom: 15px;
+}
+
+/* أزرار السحب */
+.button-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cash-btn { background: var(--success); }
+.network-btn { background: var(--primary); }
+.undo-btn { background: var(--warning); }
+.back-btn { background: var(--primary); margin-top: 10px; }
+
+button:hover { opacity: 0.9; }
+
+/* القائمة */
+.withdrawals-list {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  background: var(--card-light);
+  border-radius: 16px;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+  transition: background 0.3s, color 0.3s;
+}
+
+.withdrawals-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.withdrawals-list th, .withdrawals-list td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+.withdrawals-list th {
+  background: #f0f0f0;
+}
+
+/* Dark Mode */
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+body.dark .form-container,
+body.dark .withdrawals-list {
+  background: var(--card-dark);
+  color: var(--text-dark);
+}
+body.dark .withdrawals-list th {
+  background: #2a2a2a;
+}
+
+/* زر الوضع الليلي */
+#themeBtn {
+  margin-bottom: 20px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  background: var(--primary);
+  color: #fff;
+}
+</style>
+</head>
+<body>
+
+<h1>سحوبات المدير</h1>
+<button id="themeBtn">تبديل الوضع الليلي/الفاتح</button>
+
+<div class="form-container">
+  <input type="number" id="amount" placeholder="أدخل المبلغ" min="1">
+  <div class="button-row">
+    <button class="cash-btn" id="cashBtn"><i class="fas fa-money-bill"></i> كاش</button>
+    <button class="network-btn" id="networkBtn"><i class="fas fa-credit-card"></i> شبكة</button>
+  </div>
+  <div class="button-row">
+    <button class="undo-btn" id="undoBtn"><i class="fas fa-undo"></i> التراجع عن آخر سحب</button>
+  </div>
+  <button class="back-btn" onclick="window.location.href='dashboard.html'"><i class="fas fa-arrow-left"></i> العودة للوحة التحكم</button>
+</div>
+
+<div class="withdrawals-list">
+  <h3>آخر السحوبات</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>التاريخ</th>
+        <th>المبلغ</th>
+        <th>النوع</th>
+        <th>حذف</th>
+      </tr>
+    </thead>
+    <tbody id="withdrawalsTable"></tbody>
+  </table>
+</div>
+
+<script>
+// Dark Mode Toggle
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+});
+if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
+
+// إدارة السحوبات
+if(!localStorage.getItem("adminPassword")) localStorage.setItem("adminPassword","1234");
+let pass = prompt("ادخل كلمة مرور المدير للوصول لهذه الصفحة:");
+if(pass !== localStorage.getItem("adminPassword")){
+    alert("كلمة المرور غير صحيحة! سيتم تحويلك للوحة التحكم.");
+    window.location.href="dashboard.html";
+}
+
+const tableBody = document.getElementById("withdrawalsTable");
+const amountInput = document.getElementById("amount");
+
+function renderTable(){
+  const withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
+  tableBody.innerHTML = "";
+  withdrawals.slice().reverse().forEach((w,index)=>{
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${w.date}</td>
+      <td>${w.amount}</td>
+      <td>${w.type==='cash'?'💵 كاش':'💳 شبكة'}</td>
+      <td><i class="fas fa-trash" style="cursor:pointer" onclick="deleteEntry(${withdrawals.length-1-index})"></i></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function addWithdrawal(type){
+  const amount = parseFloat(amountInput.value);
+  if(isNaN(amount) || amount<=0){ alert("ادخل مبلغ صحيح"); return; }
+  const date = new Date().toISOString().split("T")[0];
+  const withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
+  withdrawals.push({amount,type,date});
+  localStorage.setItem("withdrawals",JSON.stringify(withdrawals));
+  amountInput.value = "";
+  renderTable();
+}
+
+function deleteEntry(index){
+  const withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
+  if(confirm("هل تريد حذف هذا السحب؟")){
+    withdrawals.splice(index,1);
+    localStorage.setItem("withdrawals",JSON.stringify(withdrawals));
+    renderTable();
+  }
+}
+
+function undoLast(){
+  const withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
+  if(withdrawals.length === 0){ alert("لا يوجد سحب للتراجع"); return; }
+  if(confirm("هل تريد التراجع عن آخر سحب؟")){
+    withdrawals.pop();
+    localStorage.setItem("withdrawals",JSON.stringify(withdrawals));
+    renderTable();
+  }
+}
+
+// الأحداث
+document.getElementById("cashBtn").addEventListener("click",()=>addWithdrawal("cash"));
+document.getElementById("networkBtn").addEventListener("click",()=>addWithdrawal("network"));
+document.getElementById("undoBtn").addEventListener("click",undoLast);
+
+renderTable();
+</script>
+
+</body>
+</html>
