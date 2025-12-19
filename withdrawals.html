@@ -2,228 +2,243 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>تحليل الحسابات - صالون لمسة إبداعية</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+<title>السلف - صالون لمسة إبداعية</title>
 <style>
-:root{
-  --primary:#1e3c72;
-  --secondary:#2a5298;
-  --bg:#f4f7fb;
-  --cash:#2ecc71;
-  --network:#9b59b6;
-  --withdraw:#f39c12;
-  --expense:#e74c3c;
-  --advance:#34495e;
-  --total:#16a085;
-  --gold:#FFD700;
+body{font-family:'Cairo',sans-serif;background:#f5f6fa;margin:0;padding:20px}
+.container{max-width:1100px;margin:auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+h1{text-align:center;margin-bottom:20px}
+
+.form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+input,select,button{padding:10px;border-radius:8px;border:1px solid #ccc}
+button{cursor:pointer}
+
+.employee-cards{display:flex;flex-wrap:wrap;gap:15px;margin-bottom:20px}
+.employee-card{
+background:#4cd137;color:#fff;border-radius:12px;
+padding:15px;flex:1 1 180px;text-align:center;
+position:relative
 }
+.employee-card span{display:block;font-size:22px;margin-top:8px}
 
-body{margin:0;font-family:'Cairo',sans-serif;background:var(--bg);}
-header{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:25px;text-align:center;position:relative;}
-header h1{margin:0;font-size:26px} 
-header p{margin:5px 0 0;opacity:.9}
-.back-btn{position:absolute;top:20px;right:20px;padding:10px 15px;background:#16a085;color:#fff;border:none;border-radius:12px;cursor:pointer;transition:0.3s;}
-.back-btn:hover{opacity:0.9;}
+.delete-btn,.remove-emp{
+position:absolute;top:6px;border:none;color:#fff;
+border-radius:50%;width:26px;height:26px;
+font-weight:bold;cursor:pointer
+}
+.delete-btn{right:6px;background:#e84118}
+.remove-emp{left:6px;background:#2f3640}
 
-.container{max-width:1200px;margin:auto;padding:20px;}
-.filters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:25px;}
-.filters input,.filters button{padding:10px 14px;border-radius:10px;border:1px solid #ddd;font-family:inherit;}
-.filters button{background:var(--primary);color:#fff;cursor:pointer;border:none;}
-.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
-.card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.08);transition:transform 0.3s, box-shadow 0.3s;text-align:center;}
-.card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 15px 30px rgba(0,0,0,0.2);}
-.card h3{margin:0;font-size:20px;color:#666;display:flex;justify-content:center;align-items:center;gap:10px;}
-.card h3 span.emoji{font-size:55px;color:var(--gold);}
-.card .value{font-size:26px;font-weight:800;margin-top:8px;transition: opacity 0.5s; opacity:1;}
-.value.fade-out{opacity:0;}
-.cash{color:var(--cash)} .network{color:var(--network)} .withdraw{color:var(--withdraw)}
-.expense{color:var(--expense)} .advance{color:var(--advance)} .total{color:var(--total);text-shadow:0 0 10px var(--total),0 0 20px var(--total);font-size:28px;}
-.chart-box{background:#fff;margin-top:30px;padding:20px;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.08);}
-.actions{text-align:center;margin:30px 0;}
-.actions button{padding:12px 20px;border:none;border-radius:12px;font-size:14px;margin:5px;cursor:pointer;color:#fff;}
-.excel{background:var(--cash)} .pdf{background:var(--expense)}
-footer{text-align:center;padding:15px;color:#777;font-size:13px;}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:center;padding:10px;border-bottom:1px solid #ddd}
+th{background:#f1f2f6}
 
-#themeBtn{position:absolute;top:20px;left:20px;background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer;font-size:14px;}
-body.dark{background:#121212;}
-body.dark header{background:linear-gradient(135deg,#000,#1a1a1a);}
-body.dark .card, body.dark .chart-box{background:#1e1e1e;color:#fff;}
-body.dark h3, body.dark footer{color:#bbb;}
-body.dark input, body.dark button{background:#2a2a2a;color:#fff;border:1px solid #444;}
-.alert{background:#e74c3c;color:#fff;padding:15px;border-radius:12px;margin-top:20px;text-align:center;font-weight:bold;}
-@media print{body{background:#fff} header,footer,.filters,.actions{display:none} .card{box-shadow:none;border:1px solid #ccc}}
+.btn-delete{background:#e84118;color:#fff;border:none;padding:6px 12px;border-radius:6px}
+
+.total-card{
+background:#ff6b81;color:#fff;border-radius:12px;
+padding:20px;text-align:center;font-size:20px;margin-bottom:20px
+}
+.total-card span{font-size:32px;display:block}
+
+.employee-sent{background:#fff3cd}
+.employee-manual{background:#d4edda}
 </style>
 </head>
 
 <body>
-<header>
-  <h1>📊 تحليل الحسابات</h1>
-  <p>صالون لمسة إبداعية – نظرة مالية شاملة</p>
-  <button id="themeBtn" onclick="toggleTheme()">🌙</button>
-  <button class="back-btn" onclick="window.location.href='dashboard.html'">
-    <i class="fas fa-arrow-left"></i> العودة للوحة التحكم
-  </button>
-</header>
+<div class="container">
 
-<div class="container" id="report">
-  <div class="filters">
-    <input type="date" id="from">
-    <input type="date" id="to">
-    <button onclick="loadData()">تحديث البيانات</button>
-  </div>
+<h1>سلف الموظفين</h1>
 
-  <div class="dashboard">
-    <div class="card"><h3><span class="emoji">💵</span> مبيعات كاش</h3><div id="salesCash" class="value cash">0</div></div>
-    <div class="card"><h3><span class="emoji">💳</span> مبيعات شبكة</h3><div id="salesNetwork" class="value network">0</div></div>
-    <div class="card"><h3><span class="emoji">💰</span> سحوبات كاش</h3><div id="withdrawCash" class="value withdraw">0</div></div>
-    <div class="card"><h3><span class="emoji">🏦</span> سحوبات شبكة</h3><div id="withdrawNetwork" class="value withdraw">0</div></div>
-    <div class="card"><h3><span class="emoji">💸</span> المصروفات</h3><div id="expensesTotal" class="value expense">0</div></div>
-    <div class="card"><h3><span class="emoji">📝</span> السلف</h3><div id="advancesTotal" class="value advance">0</div></div>
-    <div class="card"><h3><span class="emoji">🪙</span> المتبقي كاش</h3><div id="remainCash" class="value cash">0</div></div>
-    <div class="card"><h3><span class="emoji">💰</span> المتبقي شبكة</h3><div id="remainNetwork" class="value network">0</div></div>
-    <div class="card"><h3><span class="emoji">📊</span> إجمالي المتبقي</h3><div id="totalRemain" class="value total">0</div></div>
-    <div class="card"><h3><span class="emoji">📅</span> مقارنة شهرية</h3><div id="monthlyCompare" class="value">—</div></div>
-    <div class="card"><h3><span class="emoji">📆</span> كشف حساب اليوم</h3><div id="dailyReport" class="value">0</div></div>
-  </div>
-
-  <div id="alertBox"></div>
-
-  <div class="chart-box">
-    <canvas id="chart" height="110"></canvas>
-  </div>
+<!-- إضافة سلفة -->
+<div class="form-row">
+<select id="employeeName"></select>
+<button onclick="addEmployee()">+</button>
+<input type="number" id="withdrawAmount" placeholder="المبلغ">
+<input type="date" id="withdrawDate">
+<button onclick="addWithdrawal()">إضافة سلفة</button>
+<button onclick="goBack()">رجوع للقائمة</button>
 </div>
 
-<div class="actions">
-  <button class="excel" onclick="exportExcel()">📥 Excel</button>
-  <button class="pdf" onclick="exportPDF()">📄 PDF</button>
-  <button onclick="window.print()">🖨️ طباعة رسمية</button>
+<!-- إجمالي -->
+<div class="total-card">
+إجمالي السلف
+<span id="totalWithdrawals">0</span> ريال
 </div>
 
-<footer>© صالون لمسة إبداعية</footer>
+<!-- بطاقات الموظفين -->
+<div class="employee-cards" id="employeeCards"></div>
+
+<!-- جدول السلف -->
+<table>
+<thead>
+<tr>
+<th>الموظف</th>
+<th>المبلغ</th>
+<th>التاريخ</th>
+<th>المصدر</th>
+<th>حذف</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+</div>
 
 <script>
-// حماية الصفحة: السماح فقط للمدير بالدخول
-if(!localStorage.getItem("loggedInAsAdmin") || localStorage.getItem("loggedInAsAdmin") !== "true") {
-    alert("يجب تسجيل الدخول كمدير للوصول لهذه الصفحة!");
-    window.location.href = "index.html";
+/* البيانات */
+let employees = JSON.parse(localStorage.getItem('employees')) || ["أحمد","ياسر","محمد"];
+let withdrawals = JSON.parse(localStorage.getItem('salfData')) || [];
+
+localStorage.setItem('employees', JSON.stringify(employees));
+localStorage.setItem('salfData', JSON.stringify(withdrawals));
+
+function generateID(){
+    return '_' + Math.random().toString(36).substr(2,9);
 }
 
-let chart;
-const get=(k)=>JSON.parse(localStorage.getItem(k))||[];
-const filter=(arr)=>{const f=from.value,t=to.value;return arr.filter(d=>{if(!d.date) return true;if(f&&d.date<f) return false;if(t&&d.date>t) return false;return true;});}
-const sum=(a,t)=>a.filter(x=>!t||x.type===t).reduce((s,x)=>s+x.amount,0);
+/* تحميل الموظفين */
+function populateEmployees(){
+    const s=document.getElementById('employeeName');
+    s.innerHTML='<option value="">اختر الموظف</option>';
+    employees.forEach(e=>{
+        let o=document.createElement('option');
+        o.value=e;o.textContent=e;
+        s.appendChild(o);
+    });
+}
 
-function animateValue(id, start, end, duration=800){
-  let obj=document.getElementById(id),range=end-start,current=start;
-  let increment=range/(duration/20);
-  obj.classList.add("fade-out");
-  setTimeout(()=>{obj.classList.remove("fade-out")},20);
-  let timer=setInterval(()=>{current+=increment;
-    if((increment>0&&current>=end)||(increment<0&&current<=end)){
-      current=end; clearInterval(timer);
+/* إضافة موظف */
+function addEmployee(){
+    let n=prompt('اسم الموظف');
+    if(n && !employees.includes(n)){
+        employees.push(n);
+        localStorage.setItem('employees',JSON.stringify(employees));
+        populateEmployees();
+        draw();
     }
-    obj.textContent=Math.floor(current);
-  },20);
 }
 
-function loadData(){
-  const s=filter(get("sales")),
-        w=filter(get("withdrawals")),
-        e=filter(get("expenses")),
-        a=filter(get("advances"));
+/* إضافة سلفة (يدوية) */
+function addWithdrawal(){
+    let emp=employeeName.value;
+    let amt=+withdrawAmount.value;
+    let date=withdrawDate.value;
+    if(!emp||!amt||!date)return alert('اكمل البيانات');
 
-  const sc=sum(s,"cash"), sn=sum(s,"network"),
-        wc=sum(w,"cash"), wn=sum(w,"network"),
-        ex=sum(e), ad=sum(a);
+    withdrawals.push({
+        id:generateID(),
+        employee:emp,
+        amount:amt,
+        date:date,
+        sentByEmployee:false
+    });
 
-  animateValue("salesCash",0,sc);
-  animateValue("salesNetwork",0,sn);
-  animateValue("withdrawCash",0,wc);
-  animateValue("withdrawNetwork",0,wn);
-  animateValue("expensesTotal",0,ex);
-  animateValue("advancesTotal",0,ad);
-  animateValue("remainCash",0,sc-wc-ex);
-  animateValue("remainNetwork",0,sn-wn);
-  animateValue("totalRemain",0,(sc-wc-ex)+(sn-wn));
-
-  monthlyCompareFun();
-  dailyReportFun();
-  showAlerts(sc-wc-ex,sn-wn);
-  drawChart(sc,sn,wc,wn,ex,ad);
+    localStorage.setItem('salfData',JSON.stringify(withdrawals));
+    withdrawAmount.value='';withdrawDate.value='';
+    draw();
 }
 
-function monthlyCompareFun(){
-  const sales=get("sales");
-  const now=new Date();
-  const m=now.getMonth(), y=now.getFullYear();
-  const cur=sales.filter(s=>new Date(s.date).getMonth()===m && new Date(s.date).getFullYear()===y)
-                   .reduce((a,b)=>a+b.amount,0);
-  const prev=sales.filter(s=>new Date(s.date).getMonth()===m-1 && new Date(s.date).getFullYear()===y)
-                   .reduce((a,b)=>a+b.amount,0);
-  monthlyCompare.textContent=`الشهر الحالي: ${cur} | السابق: ${prev}`;
+/* رسم الجدول */
+function drawTable(){
+    const tb=document.getElementById('tbody');
+    tb.innerHTML='';
+    let total=0;
+
+    withdrawals.forEach(w=>{
+        total+=w.amount;
+        tb.innerHTML+=`
+        <tr class="${w.sentByEmployee?'employee-sent':'employee-manual'}">
+            <td>${w.employee}</td>
+            <td>${w.amount}</td>
+            <td>${w.date}</td>
+            <td>${w.sentByEmployee?'موظف':'مدير'}</td>
+            <td><button class="btn-delete" onclick="deleteWithdrawal('${w.id}')">حذف</button></td>
+        </tr>`;
+    });
+
+    totalWithdrawals.textContent=total.toFixed(2);
 }
 
-function dailyReportFun(){
-  const today=new Date().toISOString().split("T")[0];
-  const total=get("sales").filter(s=>s.date===today).reduce((a,b)=>a+b.amount,0);
-  dailyReport.textContent=total;
+/* رسم البطاقات (تجمع الكل) */
+function drawCards(){
+    const c=document.getElementById('employeeCards');
+    c.innerHTML='';
+
+    employees.forEach(emp=>{
+        let empList = withdrawals.filter(w=>w.employee===emp);
+        let sum = empList.reduce((a,b)=>a+b.amount,0);
+        let sentCount = empList.filter(w=>w.sentByEmployee).length;
+
+        c.innerHTML+=`
+        <div class="employee-card">
+            <button class="delete-btn" onclick="deleteEmployeeLoans('${emp}')">×</button>
+            <button class="remove-emp" onclick="removeEmployee('${emp}')">−</button>
+            ${emp}
+            <span>${sum.toFixed(2)} ريال</span>
+            ${sentCount?`<div style="font-size:13px">(${sentCount} مرسلة من الموظف)</div>`:''}
+        </div>`;
+    });
 }
 
-function showAlerts(remainCashVal, remainNetworkVal){
-  alertBox.innerHTML="";
-  if(remainCashVal<0) alertBox.innerHTML+=`<div class="alert">⚠️ رصيد الكاش سالب</div>`;
-  if(remainNetworkVal<0) alertBox.innerHTML+=`<div class="alert">⚠️ رصيد الشبكة سالب</div>`;
+/* حذف سلفة واحدة */
+function deleteWithdrawal(id){
+    if(!confirm('هل تريد حذف هذه السلفة؟')) return;
+
+    // حذف من البيانات المحلية
+    withdrawals = withdrawals.filter(w => w.id !== id);
+
+    // تحديث localStorage
+    localStorage.setItem('salfData', JSON.stringify(withdrawals));
+
+    // إعادة رسم الجدول والبطاقات
+    draw();
+
+    // تفعيل storage event لأي صفحات أخرى
+    window.dispatchEvent(new Event('storage'));
 }
 
-function drawChart(sc,sn,wc,wn,ex,ad){
-  if(chart) chart.destroy();
-  chart=new Chart(chart,{
-    type:"bar",
-    data:{labels:["مبيعات كاش","مبيعات شبكة","سحوبات كاش","سحوبات شبكة","مصروفات","سلف"],
-          datasets:[{data:[sc,sn,wc,wn,ex,ad],
-                     backgroundColor:["#2ecc71","#9b59b6","#f39c12","#f39c12","#e74c3c","#34495e"]}]},
-    options:{animation:{duration:1000,easing:"easeOutBounce"},responsive:true,plugins:{legend:{display:false}}}
-  });
+/* حذف كل سلف موظف */
+function deleteEmployeeLoans(emp){
+    if(!confirm(`حذف كل سلف ${emp}؟`))return;
+    withdrawals = withdrawals.filter(w=>w.employee!==emp);
+    localStorage.setItem('salfData',JSON.stringify(withdrawals));
+    draw();
+    window.dispatchEvent(new Event('storage'));
 }
 
-function exportExcel(){
-  const wb=XLSX.utils.book_new();
-  const ws=XLSX.utils.json_to_sheet([
-    {البند:"مبيعات كاش",القيمة:salesCash.textContent},
-    {البند:"مبيعات شبكة",القيمة:salesNetwork.textContent},
-    {البند:"سحوبات كاش",القيمة:withdrawCash.textContent},
-    {البند:"سحوبات شبكة",القيمة:withdrawNetwork.textContent},
-    {البند:"المصروفات",القيمة:expensesTotal.textContent},
-    {البند:"السلف",القيمة:advancesTotal.textContent},
-    {البند:"المتبقي كاش",القيمة:remainCash.textContent},
-    {البند:"المتبقي شبكة",القيمة:remainNetwork.textContent},
-    {البند:"إجمالي المتبقي",القيمة:totalRemain.textContent},
-    {البند:"الشهر الحالي",القيمة:monthlyCompare.textContent},
-    {البند:"اليوم",القيمة:dailyReport.textContent}
-  ]);
-  XLSX.utils.book_append_sheet(wb,ws,"تحليل");
-  XLSX.writeFile(wb,"analysis.xlsx");
+/* حذف الموظف نهائيًا */
+function removeEmployee(emp){
+    if(!confirm(`حذف ${emp} نهائيًا؟`))return;
+    employees = employees.filter(e=>e!==emp);
+    withdrawals = withdrawals.filter(w=>w.employee!==emp);
+    localStorage.setItem('employees',JSON.stringify(employees));
+    localStorage.setItem('salfData',JSON.stringify(withdrawals));
+    populateEmployees();
+    draw();
+    window.dispatchEvent(new Event('storage'));
 }
 
-function exportPDF(){
-  html2pdf().from(report).save("analysis.pdf");
+/* إعادة رسم */
+function draw(){
+    drawTable();
+    drawCards();
 }
 
-// Dark Mode
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme", document.body.classList.contains("dark")?"dark":"light");
-}
-if(localStorage.getItem("theme")==="dark"){document.body.classList.add("dark");}
+/* تزامن مع صفحة الموظف */
+window.addEventListener('storage',e=>{
+    if(e.key==='salfData'){
+        withdrawals = JSON.parse(localStorage.getItem('salfData')||'[]');
+        draw();
+    }
+});
 
-loadData();
+populateEmployees();
+draw();
+
+/* زر العودة */
+function goBack(){ window.location.href='dashboard.html'; }
 </script>
-
 </body>
 </html>
